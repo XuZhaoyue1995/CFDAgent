@@ -27,7 +27,7 @@ promise that everything remains on your computer.
 
 ## Support correspondence
 
-If you voluntarily open a [GitHub issue](https://github.com/XuZhaoyue1995/cfdagent/issues),
+If you voluntarily open a [GitHub issue](https://github.com/XuZhaoyue1995/CFDAgent/issues),
 the publisher can see the information you submit and the public profile
 information GitHub shows. Public issues and attachments are visible to others.
 Provide only the material needed to explain your question, and omit secrets

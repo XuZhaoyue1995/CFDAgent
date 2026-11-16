@@ -28,10 +28,10 @@
     "brandColor": "#0B2236",
     "composerIcon": "./assets/logo.png",
     "logo": "./assets/logo.png",
-    "websiteURL": "https://github.com/XuZhaoyue1995/cfdagent",
-    "supportURL": "https://github.com/XuZhaoyue1995/cfdagent/issues",
-    "privacyPolicyURL": "https://github.com/XuZhaoyue1995/cfdagent/blob/main/PRIVACY.md",
-    "termsOfServiceURL": "https://github.com/XuZhaoyue1995/cfdagent/blob/main/TERMS.md"
+    "websiteURL": "https://github.com/XuZhaoyue1995/CFDAgent",
+    "supportURL": "https://github.com/XuZhaoyue1995/CFDAgent/issues",
+    "privacyPolicyURL": "https://github.com/XuZhaoyue1995/CFDAgent/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/XuZhaoyue1995/CFDAgent/blob/main/TERMS.md"
   },
   "keywords": [
     "cfd",
@@ -40,7 +40,7 @@
     "mesh",
     "postprocessing"
   ],
-  "homepage": "https://github.com/XuZhaoyue1995/cfdagent",
-  "repository": "https://github.com/XuZhaoyue1995/cfdagent",
+  "homepage": "https://github.com/XuZhaoyue1995/CFDAgent",
+  "repository": "https://github.com/XuZhaoyue1995/CFDAgent",
   "license": "CC-BY-4.0"
 }

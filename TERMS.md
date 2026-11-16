@@ -38,4 +38,4 @@ or external service is governed separately by that provider's terms.
 
 See [PRIVACY.md](PRIVACY.md) for package behavior, host processing, and support
 correspondence. Questions and bug reports can be raised through
-[GitHub issues](https://github.com/XuZhaoyue1995/cfdagent/issues).
+[GitHub issues](https://github.com/XuZhaoyue1995/CFDAgent/issues).

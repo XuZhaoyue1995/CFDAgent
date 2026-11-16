@@ -69,7 +69,7 @@ CFDAgent is submitted to the Claude and Codex plugin directories; availability t
 
 - **Claude:** find CFDAgent in the plugin directory on the Customize page in claude.ai or the Claude desktop app. A plugin added there is also available in Claude Code.
 - **Codex:** find CFDAgent in the Codex plugin directory.
-- **Local use:** in Claude Code, run `claude --plugin-dir ./cfdagent` from the parent of the `cfdagent` folder; in Codex, add this folder through the plugin installation flow.
+- **Local use:** in Claude Code, run `claude --plugin-dir ./CFDAgent` from the parent of the `CFDAgent` folder; in Codex, add this folder through the plugin installation flow.
 
 Both `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json` live at the repository root and share the same `skills/` folder.
 
@@ -110,11 +110,11 @@ Copyright © 2026 Zhaoyue Xu.
 
 CFDAgent is licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/); the full legal code is in [LICENSE](LICENSE). You may use, adapt and share it for any purpose, including commercially, as long as you give appropriate credit. When you share CFDAgent or material adapted from it, please credit it as:
 
-> CFDAgent by Zhaoyue Xu (https://github.com/XuZhaoyue1995/cfdagent), licensed under CC BY 4.0.
+> CFDAgent by Zhaoyue Xu (https://github.com/XuZhaoyue1995/CFDAgent), licensed under CC BY 4.0.
 
 ## Privacy, terms and support
 
 - [Privacy policy](PRIVACY.md): package behavior, host processing, and voluntary support correspondence.
 - [Terms of use](TERMS.md)
-- Questions and bug reports: [GitHub issues](https://github.com/XuZhaoyue1995/cfdagent/issues)
+- Questions and bug reports: [GitHub issues](https://github.com/XuZhaoyue1995/CFDAgent/issues)
 - [Changelog](CHANGELOG.md)
