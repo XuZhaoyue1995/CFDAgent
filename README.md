@@ -36,19 +36,19 @@ The [skill entry point](skills/cfdagent/SKILL.md) reads only the references the 
 
 | When you need to | Reference used on demand |
 | --- | --- |
-| Discuss methods and choose a solver | [Solver map: 12 external solver families and PyIB](skills/cfdagent/references/solver-selection.md) |
+| Discuss methods and choose a solver | [Solver map: 11 external solver families and PyIB](skills/cfdagent/references/solver-selection.md) |
 | Set up physics, units and coordinates, case consistency and numerics | [Case setup](skills/cfdagent/references/case-setup.md) |
 | Check volume meshes, high-order, IB, SPH, LBM or adaptive discretizations | [Mesh quality](skills/cfdagent/references/mesh-quality.md) |
 | Record the environment; handle Slurm, resource estimates and failures | [Execution](skills/cfdagent/references/execution.md) |
 | Judge results; plan spatial and temporal sensitivity studies or cross-solver comparisons | [Result validation](skills/cfdagent/references/result-validation.md) |
-| Find classic cases and validation data | [Benchmark library: 8 curated official sources and how to cite them](skills/cfdagent/references/benchmark-library.md) |
+| Find classic cases and validation data | [Benchmark library: 7 curated official sources and how to cite them](skills/cfdagent/references/benchmark-library.md) |
 | Extract quantities, compare coefficients, build figures, reports and reproducibility packages | [Post-processing and delivery](skills/cfdagent/references/postprocess-and-delivery.md) |
 | Resume a project; keep input versions, run evidence and lessons from failures | [Working notes](skills/cfdagent/references/working-notes.md) |
 | Compare a plain agent with the plugin (plugin development only) | [Plugin evaluation](skills/cfdagent/references/agent-evaluation.md) |
 
 PyIB is the author's own immersed-boundary solver. It sits in the solver map on equal terms with the other families and is not preferred by default.
 
-The skill and reference notes are currently written in Chinese. You can discuss your project in English or Chinese; responses depend on the host model.
+The skill and reference notes are written in English. You can discuss your project in other languages as well; responses depend on the host model.
 
 ## What the plugin runs, sends and stores
 

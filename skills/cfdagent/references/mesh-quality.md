@@ -1,107 +1,107 @@
-# 网格与空间离散质量：按问题取用
+# Mesh and spatial discretization quality: use what the problem needs
 
-用于生成网格、审查已有算例或定位计算异常；普通物理讨论无需启动整套检查。
-从目标量和所用离散方法判断哪些检查有价值，允许利用已有可信证据。
-没有网格或日志时，说明哪些量尚未测得，继续讨论设计和取舍。
+For generating a mesh, reviewing an existing case or locating a computational anomaly; an ordinary discussion of physics does not need the whole set of checks.
+Judge which checks are worthwhile from the target quantity and the discretization method in use; existing trustworthy evidence may be used.
+When there is no mesh or log, say which quantities have not been measured and carry on discussing the design and the trade-offs.
 
-## 先分清要回答的问题
+## First separate the questions to be answered
 
-| 问题 | 可用证据 | 不能由它直接推出的结论 |
+| Question | Evidence that can be used | What cannot be concluded from it directly |
 | --- | --- | --- |
-| 文件与几何是否有效 | 实际求解器读入、连接关系、体积或映射检查 | 目标物理尺度已解析 |
-| 离散是否适合本任务 | 局部分辨率、边界距离、模型适配、运动覆盖 | 网格误差足够小 |
-| 目标量对空间离散是否敏感 | 有可比设置的加密或阶次研究 | 时间误差、模型误差已消除 |
-| 时间推进与统计是否充分 | 时间步研究、周期或统计收敛 | 实验一致、物理模型正确 |
-| 结果是否可信 | 守恒、理论或实验对照及其不确定度 | 任意新工况均已验证 |
+| Are the files and the geometry valid? | Reading by the actual solver, connectivity, volume or mapping checks | That the target physical scales are resolved |
+| Does the discretization suit this task? | Local resolution, distance to boundaries, fit to the model, coverage of the motion | That the mesh error is small enough |
+| Is the target quantity sensitive to the spatial discretization? | A refinement or order study with comparable settings | That temporal error and model error have been eliminated |
+| Are the time advancement and the statistics sufficient? | A time-step study, periodic or statistical convergence | Agreement with experiment, or a correct physical model |
+| Can the result be trusted? | Conservation, comparison with theory or experiment, and their uncertainties | That any new operating condition has been validated |
 
-“网格检查通过”只对应已执行的检查。网格外观、单次稳定运行、低残差不能替代上述证据。
-只比较单元总数往往不够：同时考虑关键区域、分辨率分布、近壁策略和离散阶次。
+"The mesh check passed" covers only the checks that were run. The look of a mesh, a single stable run or low residuals cannot replace the evidence above.
+Comparing total cell counts alone is often not enough: consider the key regions, the distribution of resolution, the near-wall strategy and the discretization order together.
 
-## 读取实际文件，再选检查
+## Read the actual files, then choose the checks
 
-- 确认求解器家族、发行版/版本、空间离散、维数、长度单位和几何尺度。
-- 对照输入配置核查边界名称、物理类型、法向/方向、周期配对、多区域接口及运动定义。
-- 优先使用该版本原生读入和网格诊断；记录命令、输入文件与完整输出的位置。
-- 需要补充时再现场写脚本，或调用现有网格库；不必预先建立统一检查程序。
-- 查看问题的位置和数量，而非只读最大值；翼前缘、尾缘、间隙和界面等位置的影响可能不同。
-- 几何或转换后的网格、运动后的网格可能发生变化；检查对象应对应真正将被求解的文件或时刻。
+- Confirm the solver family, the distribution and version, the spatial discretization, the number of dimensions, the length unit and the geometric scale.
+- Check the boundary names, physical types, normals and directions, periodic pairing, multi-region interfaces and motion definitions against the input configuration.
+- Prefer the native reader and mesh diagnostics of that version; record the commands, the input files and the location of the complete output.
+- When more is needed, write a script on the spot or call an existing mesh library; there is no need to build a unified checking program in advance.
+- Look at where the problems are and how many there are, not only at the maximum value; the effect may differ at a wing leading edge, a trailing edge, a gap or an interface.
+- The geometry, or the mesh after conversion or after motion, may have changed; what is checked should be the file or the instant that will actually be solved.
 
-## 贴体网格：有限体积、有限元与高阶方法
+## Body-fitted meshes: finite volume, finite element and high-order methods
 
-**几何和连接。** 核查退化/翻转单元、重复或悬空连接、面覆盖与边界遗漏；按求解器定义解释带符号体积和映射方向。
-有限体积还关注非正交性、偏斜、面与单元中心关系、尺度突变等指标及离散修正方式。
-高长宽比单元是否合适取决于方向、物理梯度和方法；贴壁拉伸网格不因长宽比高就自动失效。
+**Geometry and connectivity.** Check for degenerate or inverted cells, duplicate or dangling connectivity, face coverage and missing boundaries; interpret signed volumes and mapping directions according to the solver's definitions.
+For finite volume, also consider non-orthogonality, skewness, the relation between face and cell centers, abrupt changes of scale and similar metrics, and how the discretization corrects for them.
+Whether high-aspect-ratio cells are appropriate depends on direction, on the physical gradients and on the method; a stretched near-wall mesh is not invalid simply because its aspect ratio is high.
 
-**近壁和增长。** 结合层流、壁面函数、壁面解析 RANS 或 LES 目标设计首层高度、层数、总厚度与增长率。
-`y+` 通常需要壁面剪切估计或试算结果；标明是预估还是实际分布，避免只报平均值。
-没有跨模型通用的 `y+`、偏斜度或增长率合格线；引用适用版本、模型文档或已验证基准再给数值目标。
+**Near-wall region and growth.** Design the first-layer height, the number of layers, the total thickness and the growth rate around the target: laminar flow, wall functions, wall-resolved RANS or LES.
+`y+` usually needs an estimate of wall shear or the result of a trial run; state whether it is an a-priori estimate or an actual distribution, and avoid reporting only the mean.
+There is no pass line for `y+`, skewness or growth rate that holds across models; cite the applicable version, the model documentation or a validated benchmark before giving a numerical target.
 
-**边界和关键结构。** 根据尾迹、激波、分离、热边界层、自由液面或窄间隙布置分辨率。
-检查远场/出口位置、阻塞、周期长度和边界类型对目标量的影响，必要时做域大小研究。
-移动/变形/滑移或重叠网格需要检查运动范围内的单元质量、接口和有效插值覆盖，静态初始检查不足。
+**Boundaries and key structures.** Place resolution according to the wake, shocks, separation, thermal boundary layers, the free surface or narrow gaps.
+Check the effect on the target quantity of the far-field and outlet positions, blockage, periodic length and boundary types, with a domain-size study where necessary.
+Moving, deforming, sliding or overset meshes need the cell quality, the interfaces and the valid interpolation coverage to be checked over the range of motion; a static initial check is not enough.
 
-**高阶几何。** 线性网格有效不保证曲面高阶映射有效；按方法检查曲面单元映射 Jacobian、边界几何与阶次。
-区分几何阶次和解的阶次，必要时通过 `h`、`p` 或组合加密比较目标量。
-Nektar++ 官方文档介绍了无效曲面单元与修复机制，可作为判断依据；命令应采用本机对应版本。
+**High-order geometry.** A valid linear mesh does not guarantee a valid high-order mapping of curved surfaces; check the mapping Jacobian of curved elements, the boundary geometry and the order according to the method.
+Distinguish the geometry order from the solution order, and where necessary compare the target quantity under `h` refinement, `p` refinement or a combination.
+The official Nektar++ documentation describes invalid curved elements and the repair mechanisms, and can serve as a basis for judgment; commands should be those of the version installed locally.
 [Nektar++ 5.8 NekMesh](https://doc.nektar.info/userguide/5.8.0/user-guidese19.html)
 
-### 原生诊断示例
+### Native diagnostics: examples
 
-OpenCFD OpenFOAM v2306 文档确认了以下选项；使用前核对本机发行版及 `checkMesh -help`。
-在算例目录执行，并保存输出到项目选择的日志文件：
+The OpenCFD OpenFOAM v2306 documentation confirms the options below; before use, check the local distribution and `checkMesh -help`.
+Run it in the case directory and save the output to a log file chosen by the project:
 
 ```sh
 checkMesh -allTopology -allGeometry
 ```
 
-用户已有适用的 `system/meshQualityDict` 时，可按该版本文档使用 `-meshQuality`。
-动态网格、多区域、并行分解和指定时间需要相应选项，不能拿一次默认检查代表全部。
-[OpenCFD v2306 checkMesh 官方说明](https://api.openfoam.com/2306/checkMesh_8C.html)
+When the user already has a suitable `system/meshQualityDict`, `-meshQuality` can be used as documented for that version.
+Dynamic meshes, multiple regions, parallel decomposition and specific times need the corresponding options; one default check cannot stand for all of them.
+[OpenCFD v2306 checkMesh official description](https://api.openfoam.com/2306/checkMesh_8C.html)
 
-SU2 的网格 marker 名称需要与配置中的边界条件对应；CGNS 自带的边界物理条件不能直接视为已被 SU2 采用。
-读取实际网格和配置，结合对应版本预处理日志核实。对于 SU2、PyFR 等，不臆造统一的 `checkMesh` 命令。
-[SU2 网格说明](https://su2code.github.io/docs_v7/Mesh-File/)、[SU2 边界设置](https://su2code.github.io/docs_v7/Markers-and-BC/)
+In SU2, the marker names in the mesh must correspond to the boundary conditions in the configuration; the physical boundary conditions carried in a CGNS file cannot be assumed to have been adopted by SU2.
+Read the actual mesh and configuration, and verify them against the preprocessing log of the matching version. For SU2, PyFR and others, do not invent a unified `checkMesh` command.
+[SU2 mesh file notes](https://su2code.github.io/docs_v7/Mesh-File/), [SU2 boundary settings](https://su2code.github.io/docs_v7/Markers-and-BC/)
 
-## 浸入边界：背景网格与表面离散一起看
+## Immersed boundary: look at the background mesh and the surface discretization together
 
-- 确认背景网格有效、层级过渡及算子模板可用；几何不贴体不等于无需空间分辨率检查。
-- 查看局部网格间距、表面 marker 间距、面积/体积权重、法向和所用核函数支持范围的关系。
-- 检查曲率、尖端、窄间隙与薄壁两侧的采样；间距比例采用该实现及核函数的依据，不套用固定经验值。
-- 运动算例检查整个运动包络和代表性极限姿态，保证插值、铺展和所需细网格带在运动中仍有支持。
-- 压力或应力重构需要额外采样/修正带时，按实际后处理实现检查覆盖与同侧采样；求解可运行不保证重构所需数据齐全。
-- 有试算时可检查边界速度偏差、穿透或泄漏、受力变化，并用离散加密判断其影响。
+- Confirm that the background mesh is valid, and that the level transitions and the operator stencils are usable; a geometry that is not body-fitted does not remove the need to check spatial resolution.
+- Look at the relation between the local mesh spacing, the surface marker spacing, the area or volume weights, the normals and the support of the kernel in use.
+- Check the sampling at curvature, at tips, in narrow gaps and on both sides of thin walls; take the spacing ratio from the basis given by that implementation and kernel, not from a fixed rule of thumb.
+- For moving cases, check the whole envelope of motion and representative extreme poses, to ensure that interpolation, spreading and the required fine-mesh band remain supported during the motion.
+- When pressure or stress reconstruction needs an additional sampling or correction band, check the coverage and same-side sampling against the actual post-processing implementation; a solve that runs does not guarantee that the data needed for reconstruction are complete.
+- When a trial run exists, the boundary velocity deviation, penetration or leakage and the variation of forces can be checked, with refinement of the discretization used to judge their effect.
 
-PyIB 的薄壁可按作者的单侧局部无限厚思路处理；结合实际几何、法向、侧别和相应实现确认。
-标准示例或当前后处理模板的几何范围不能当作整个 IB 方法的能力上限；新几何也不能沿用已有模板的验证结论。
-[PyIB 当前后处理说明](https://github.com/XuZhaoyue1995/PyIB/blob/main/docs/POSTPROCESSING.md)
+Thin walls in PyIB can be handled with the author's one-sided, locally infinitely thick approach; confirm against the actual geometry, normals, side and the corresponding implementation.
+The geometric range of the standard examples or of the current post-processing templates must not be taken as the upper limit of what the IB method as a whole can do, and a new geometry cannot inherit the validation conclusions of an existing template.
+[PyIB current post-processing notes](https://github.com/XuZhaoyue1995/PyIB/blob/main/docs/POSTPROCESSING.md)
 
-## 其他离散方法的重点
+## Key points for other discretization methods
 
-**SPH（如 DualSPHysics）。** 检查粒子间距、核/光滑长度、邻居覆盖、粒子排列与边界粒子布置。
-剧烈运动中关注粒子分布变化、局部缺失/聚集及所选边界模型，而非照搬单元非正交指标。
-分辨率研究应记录粒子间距及随之变化的参数，避免同时改变模型却只归因于分辨率。
-[DualSPHysics 官方 SPH 说明](https://github.com/DualSPHysics/DualSPHysics/wiki/3.-SPH-formulation)
+**SPH (e.g. DualSPHysics).** Check the particle spacing, the kernel or smoothing length, the neighbor coverage, the particle arrangement and the placement of boundary particles.
+In violent motion, watch the change in particle distribution, local voids or clustering and the chosen boundary model, instead of copying cell non-orthogonality metrics.
+A resolution study should record the particle spacing and the parameters that change with it, so that a change of model is not attributed to resolution alone.
+[DualSPHysics official SPH formulation](https://github.com/DualSPHysics/DualSPHysics/wiki/3.-SPH-formulation)
 
-**LBM（如 OpenLB、Palabos）。** 检查物理单位到格点单位的长度、时间、速度和黏度换算。
-分辨率、格点 Mach 数、松弛参数及边界定位相互关联；依据碰撞模型和边界实现判断稳定性及误差。
-加密时保持目标物理问题一致，明确换算策略，不把格点数增加当作完整验证。
-[OpenLB 1.8 用户指南：UnitConverter](https://www.openlb.net/wp-content/uploads/2025/08/olb_ug-1.8r0.pdf)
+**LBM (e.g. OpenLB, Palabos).** Check the conversion of length, time, velocity and viscosity from physical units to lattice units.
+Resolution, lattice Mach number, relaxation parameter and boundary placement are interrelated; judge stability and error from the collision model and the boundary implementation.
+When refining, keep the target physical problem the same and state the conversion strategy; an increase in lattice nodes is not a complete validation.
+[OpenLB 1.8 user guide: UnitConverter](https://www.openlb.net/wp-content/uploads/2025/08/olb_ug-1.8r0.pdf)
 
-**Basilisk 自适应。** 检查用于适应的场、各场误差容限、最小/最大层级、几何/界面表示及适应后的场更新。
-保存代表时刻的层级分布；达到最大层级仍可能欠解析。比较容限与最大层级变化对目标量的影响。
-自适应误差指标控制的是指定场的表示误差，不是目标升力或界面破碎结果的直接误差保证。
-[Basilisk adapt_wavelet 实现](https://basilisk.fr/src/grid/tree-common.h)
+**Basilisk adaptivity.** Check the fields used for adaptation, the error tolerance of each field, the minimum and maximum levels, the representation of geometry and interfaces, and the updating of fields after adaptation.
+Save the level distribution at representative instants; a flow can still be under-resolved at the maximum level. Compare the effect on the target quantity of changing the tolerances and the maximum level.
+The adaptive error indicator controls the representation error of the specified fields; it is not a direct error guarantee for the target lift or for an interface-breakup result.
+[Basilisk adapt_wavelet implementation](https://basilisk.fr/src/grid/tree-common.h)
 
-**结构网格与专用模型。** 如 FDS 的 Cartesian 网格，重点转为物理尺度分辨率、几何离散和网格块接口。
-气固、反应或多物理计算还要结合颗粒处理、源项及耦合方式选检查，不能仅凭几何质量判定适用性。
+**Structured grids and special-purpose models.** For example, with the Cartesian grid of FDS the emphasis shifts to resolution of the physical scales, discretization of the geometry and the interfaces between mesh blocks.
+Gas-solid, reacting or multiphysics computations also need checks chosen with the particle treatment, the source terms and the coupling method in mind; geometric quality alone cannot decide suitability.
 
-## 简短记录，方便下次接着做
+## A short record, so that the work can be picked up next time
 
-记录到项目现有笔记；以下字段可合并为几句话，无需每次新建一份表格。
+Record in the project's existing notes; the fields below can be merged into a few sentences, and there is no need to create a new table each time.
 
-| 检查 | 证据 | 观察 | 对当前目标的影响 | 下一步 |
+| Check | Evidence | Observation | Effect on the current goal | Next step |
 | --- | --- | --- | --- | --- |
-| 具体指标或假设 | 文件/版本/命令/日志位置 | 实测值及位置，或尚未测量 | 是否影响本次判断与原因 | 修复、局部细化、试算、对照，或暂不行动 |
+| Specific metric or assumption | File, version, command or log location | Measured value and location, or not yet measured | Whether it affects this judgment, and why | Repair, local refinement, trial run, comparison, or no action for now |
 
-区分实测结论、预估和待验证假设；有结构性无效单元时先定位修复，再把相应计算作为有效结果使用。
-用户当前只需要解释或方案时，给出相关判断即可；不以缺少完整检查材料阻止讨论。
+Distinguish measured conclusions, estimates and assumptions still to be verified; when there are structurally invalid cells, locate and repair them before the corresponding computation is used as a valid result.
+When the user currently needs only an explanation or a plan, give the relevant judgment; do not block the discussion because complete checking material is missing.

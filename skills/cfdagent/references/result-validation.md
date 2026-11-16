@@ -1,36 +1,36 @@
-# 结果可信度与敏感性研究
+# Credibility of results and sensitivity studies
 
-在解释结果、决定是否继续计算或安排验证时按需阅读。先明确用户关心的目标量（QoI）和用途，复用同一物理设置、版本与参数范围内已有的证据。改变模型、边界、实现或分辨率后，判断哪些证据仍适用，不机械重跑全部检查。
+Read as needed when interpreting results, deciding whether to continue computing or planning validation. First establish the target quantity (quantity of interest, QoI) the user cares about and what it will be used for, and reuse the evidence that already exists for the same physical settings, version and parameter range. After the model, boundaries, implementation or resolution change, judge which evidence still applies; do not mechanically rerun every check.
 
-## 选择能回答当前问题的证据
+## Choose the evidence that answers the current question
 
-| 证据 | 有用的检查 | 不能据此单独推出什么 |
+| Evidence | Useful checks | What it cannot establish on its own |
 | --- | --- | --- |
-| 执行与数据完整性 | 正常结束、有限数值、时间序列与输出完整、重启无重复段 | 正常退出不表示物理解正确 |
-| 守恒与约束 | 适用的质量、动量、能量或相体积平衡；包括储存项、边界通量和源项 | 小残差不代替完整收支；IB 反力需明确正负号、控制体和内流体口径 |
-| 目标量收敛 | 力、压降、流量、传热等变化趋势；稳态问题结合残差与目标量 | 一个残差阈值不证明所有目标量收敛；真实非定常不应强求常数 |
-| 周期或统计充分性 | 丢弃启动段，比较周期/分块统计，考虑相关时间与有效样本数 | 相邻输出不能自动视为独立样本；重复周期数量不是通用验收值 |
-| 数值敏感性 | 网格/粒子/阶数、时间步、计算域和适用的迭代容差 | 网格收敛不消除物理模型误差 |
-| 物理对照 | 条件一致的解析解、实验或可靠文献，记录参考不确定度 | 两个求解器一致不等同于独立实验验证 |
+| Execution and data integrity | Normal termination, finite values, complete time series and output, no duplicated segment after a restart | A normal exit does not mean the physical solution is correct |
+| Conservation and constraints | The applicable balance of mass, momentum, energy or phase volume, including storage terms, boundary fluxes and source terms | A small residual is no substitute for a complete budget; for IB reaction forces, the sign, the control volume and the treatment of the interior fluid must be stated |
+| Convergence of target quantities | The trend of forces, pressure drop, flow rate, heat transfer and the like; for steady problems, residuals together with target quantities | One residual threshold does not prove that all target quantities have converged; a genuinely unsteady flow should not be forced to a constant |
+| Sufficiency of periods or statistics | Discard the startup phase, compare statistics by period or by block, and consider the correlation time and the effective sample size | Adjacent outputs cannot automatically be treated as independent samples; no fixed count of repeated periods is a universal acceptance criterion |
+| Numerical sensitivity | Mesh, particles or order, time step, computational domain and the applicable iteration tolerances | Mesh convergence does not remove physical model error |
+| Physical comparison | An analytical solution, an experiment or reliable literature under matching conditions, with the reference uncertainty recorded | Agreement between two solvers is not the same as independent experimental validation |
 
-守恒误差同时保存原始收支和归一化分母。净通量或目标值接近零时，选有物理意义的尺度并报告绝对误差，避免除以近零数制造“巨大误差”或掩盖问题。移动控制体要使用相对网格速度和对应储存项。
+For a conservation error, keep both the raw budget and the normalizing denominator. When the net flux or the target value is close to zero, choose a physically meaningful scale and report the absolute error, so that dividing by a near-zero number neither manufactures a "huge error" nor hides a problem. A moving control volume must use the velocity relative to the mesh and the corresponding storage term.
 
-阈值来自研究目标、参考精度或既有项目约定，不能静默编造通用“合格线”。证据不足时说明具体缺口和最能解决问题的下一步；初步试算可以交付初步结论。
+Thresholds come from the research goal, the accuracy of the reference or an existing project agreement; do not silently invent a universal "pass line". When the evidence is insufficient, state the specific gap and the next step that would best resolve it; a preliminary trial run can deliver a preliminary conclusion.
 
-## 网格与时间步研究
+## Mesh and time-step studies
 
-- 用目标量比较一组有解释力的分辨率；保持物理参数、边界、计算域和统计口径可比。网格、IB marker 间距、SPH 粒子间距、LBM 单位映射和高阶阶数各有含义，不能只用总单元数替代。
-- 研究空间误差时控制时间误差、迭代误差和采样误差；研究时间误差时使用足够的空间分辨率。若只能联合改变，明确报告为联合敏感性。
-- 有三点数据不意味着适合 Richardson 外推或 GCI。先检查细化关系、收敛趋势及渐近假设；非单调、振荡或统计噪声占主导时，先诊断和补充证据，不强套三点公式。
-- 高阶 p 细化、局部 AMR 和强各向异性细化需使用适用的误差分析。若只做两套设置比较，报告目标量的变化及其局限，不自动称为“网格无关”。
-- 使用 GCI 时保存分辨率定义、细化比、所用阶数及其依据、安全因子、公式来源和渐近性判断。接近零的目标量可用有意义的绝对尺度报告。
+- Compare the target quantity over a set of resolutions that has explanatory power; keep the physical parameters, the boundaries, the computational domain and the statistical conventions comparable. Mesh, IB marker spacing, SPH particle spacing, LBM unit mapping and high-order polynomial order each have their own meaning, and the total cell count alone cannot stand in for them.
+- When studying spatial error, control the temporal error, the iteration error and the sampling error; when studying temporal error, use sufficient spatial resolution. If they can only be changed together, report the result explicitly as a joint sensitivity.
+- Having three data points does not mean that Richardson extrapolation or the GCI is appropriate. First check the refinement relation, the convergence trend and the asymptotic assumption; when the behavior is non-monotonic or oscillatory, or statistical noise dominates, diagnose and add evidence first instead of forcing a three-point formula.
+- High-order p refinement, local AMR and strongly anisotropic refinement need an error analysis that applies to them. If only two settings are compared, report the change in the target quantity and its limitations; do not automatically call the result "mesh independent".
+- When using the GCI, keep the definition of resolution, the refinement ratio, the order used and its basis, the safety factor, the source of the formula and the judgment of asymptotic behavior. A target quantity close to zero can be reported with a meaningful absolute scale.
 
-方法入口：[NASA 空间收敛与 GCI](https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html)；[NASA 关于不能只用收敛关键字判定的说明](https://www.grc.nasa.gov/WWW/winddocs/user/keywords/converge.html)。实际使用前核对公式条件，不把指南中的示例参数当成本项目标准。
+Entry points for the method: [NASA spatial convergence and GCI](https://www.grc.nasa.gov/www/wind/valid/tutorial/spatconv.html); [NASA note that convergence cannot be judged from the convergence keyword alone](https://www.grc.nasa.gov/WWW/winddocs/user/keywords/converge.html). Check the conditions of a formula before actually using it, and do not take the example parameters in a guide as the standard for this project.
 
-## 参数扫描与跨求解器比较
+## Parameter sweeps and cross-solver comparisons
 
-扫描围绕科学问题选择范围和点数，先利用已有结果，再按信息价值增加计算；执行范围沿用用户已授权的资源与预算。保留每个工况、尝试及失败记录，避免只选有利结果。
+Choose the range and the number of points of a sweep around the scientific question; use existing results first, then add computations according to their information value. The scope of execution follows the resources and budget the user has already authorized. Keep a record of every condition, attempt and failure, so that favorable results are not the only ones selected.
 
-比较表记录实际物理参数与无量纲定义、模型、边界、分辨率、时间步/阶数、统计窗口和数据来源。跨求解器先对齐问题定义、二维/三维/单位展向口径、力和压力定义，再比较结果；不同离散不要求相同单元数。比较耗时应明确硬件、精度、核/GPU 数、预处理范围和达到的精度。
+A comparison table records the actual physical parameters and the nondimensional definitions, the models, the boundaries, the resolution, the time step or order, the statistical window and the data source. Across solvers, first align the problem definition, the two-dimensional, three-dimensional or per-unit-span convention and the definitions of force and pressure, and then compare the results; different discretizations are not required to have the same cell count. A comparison of run time should state the hardware, the precision, the number of cores or GPUs, the extent of preprocessing included and the accuracy reached.
 
-每条结论指向原始结果与分析脚本，简要写明“测到了什么、支持什么判断、还有什么未确定”。需要图表、系数或导出时再读 [postprocess-and-delivery.md](postprocess-and-delivery.md)；寻找参考案例时再读 [benchmark-library.md](benchmark-library.md)。
+Each conclusion points to the raw results and the analysis script, and states briefly what was measured, what judgment it supports and what remains undetermined. When figures, coefficients or exports are needed, read [postprocess-and-delivery.md](postprocess-and-delivery.md); when looking for reference cases, read [benchmark-library.md](benchmark-library.md).

@@ -1,56 +1,56 @@
-# 计算环境、资源与运行接续
+# Computing environment, resources and resuming runs
 
-在准备执行、选择资源、接续长作业或诊断失败时按需读取。纯物理讨论无需配置集群；优先复用项目已有环境、脚本和授权。
+Read as needed when preparing to execute, choosing resources, resuming a long job or diagnosing a failure. A pure discussion of physics does not need a cluster to be configured; reuse the project's existing environment, scripts and authorization first.
 
-## 环境记录
+## Environment record
 
-把后续会影响运行或结果的环境事实记入现有[工作笔记](working-notes.md)，环境改变时再更新：
+Write the environment facts that will affect later runs or results into the existing [working notes](working-notes.md), and update them when the environment changes:
 
-- 求解器名称、发行分支、版本或源码提交；实际可执行文件、模块、容器或虚拟环境的位置。
-- 实际编译和运行后端、数值精度、CPU 线程或 MPI 能力、GPU 型号及相关运行库。
-- 单 GPU 支持、多 GPU 支持、跨节点 MPI 支持分别核实；机器有多张卡不代表程序能共同使用。
-- 本机、登录节点与计算节点分别记录。登录节点探测不到 GPU，不代表计算分区没有 GPU；本地成功也不能证明远端可运行。
-- 集群实际使用的分区、账户、资源申请方式、工作目录和数据传输位置，按当前任务需要记录。
+- The solver name, release branch, version or source commit; the location of the actual executable, module, container or virtual environment.
+- The backend actually compiled and run, the numerical precision, the CPU threading or MPI capability, the GPU model and the related runtime libraries.
+- Verify single-GPU support, multi-GPU support and cross-node MPI support separately; a machine with several cards does not mean the program can use them together.
+- Record the local machine, the login node and the compute nodes separately. A GPU that cannot be detected on the login node does not mean the compute partition has none, and a local success does not prove that the remote system can run the case.
+- The partition, account, way of requesting resources, working directory and data-transfer location actually used on the cluster, recorded as the current task requires.
 
-文档说明的是潜在能力，已安装版本和一次成功运行分别提供更具体的证据。暂未核实的字段保留未知；不用为了填表安装无关求解器。记录可复现的环境信息，不把凭证写入笔记。
+Documentation describes potential capability; the installed version and one successful run each provide more specific evidence. Leave fields that have not been verified as unknown; do not install unrelated solvers just to fill in a table. Record reproducible environment information, and do not write credentials into the notes.
 
-## 启动试算能说明什么
+## What a startup trial run can show
 
-有限的启动试算主要检查输入、网格和边界是否按预期加载，求解流程能否推进，输出与必要的检查点是否可用，并测量初步资源代价。不固定要求运行若干步，也不要求前几步就达到发展流场、稳定载荷或统计收敛。报告已完成的检查及实际物理时间；启动检查通过不代表长时间稳定或目标量精度已经成立。
+A limited startup trial run mainly checks whether the input, the mesh and the boundaries load as expected, whether the solution procedure can advance, and whether the output and the necessary checkpoints are usable, and it measures a first resource cost. There is no fixed number of steps to run, and the first few steps are not required to reach a developed flow field, steady loads or statistical convergence. Report the checks completed and the physical time actually reached; passing the startup check does not mean that long-time stability or the accuracy of the target quantity has been established.
 
-启动段可能有较大的压力、力或残差变化。结合初始化方式、所推进的物理时间、每步结束时的求解质量、守恒与边界约束及后续趋势判断；不能仅凭振荡或较高的步初残差判失败。每步应满足的数值求解要求仍需检查，NaN/Inf、求解失败、约束持续恶化或无法解释的增长不能一概归为正常启动。证据不足时，在已知资源范围内安排有明确观察目标和结束条件的有限续算；不为了曲线平直而任意增加耗散或修改物理条件。
+The startup phase may show large variations in pressure, forces or residuals. Judge them together with the initialization, the physical time advanced, the solution quality at the end of each step, conservation and boundary constraints, and the subsequent trend; oscillation or a high residual at the start of a step is not enough to declare failure. The numerical solution requirements that each step should meet still need checking, and NaN/Inf values, solver failure, constraints that keep deteriorating or unexplained growth cannot all be put down to a normal startup. When the evidence is insufficient, schedule a limited continuation within the known resource scope, with a clear target of observation and a stopping condition; do not add dissipation arbitrarily or change the physical conditions to flatten a curve.
 
-若研究目标本身就是启动、冲击或瞬态峰值，该时间段需要保留并验证，不能统一作为无关瞬态丢弃。初始化与推进方法的区别可参考 [NASA Wind-US 数值建模说明](https://www.grc.nasa.gov/www/winddocs/user/numerical.html)，其中具体数值参数不作为其他求解器的通用设置。
+If the research target is itself the startup, an impact or a transient peak, that period must be kept and validated; it cannot be discarded wholesale as an irrelevant transient. For the difference between initialization and advancement methods, see the [NASA Wind-US notes on numerical modeling](https://www.grc.nasa.gov/www/winddocs/user/numerical.html); the specific numerical parameters there are not general settings for other solvers.
 
-## 资源选择与计算范围
+## Resource choice and scope of computation
 
-先看已有同类算例的实测记录；缺少证据而资源规模会影响决策时，可在已有授权范围内做短试算。记录网格或粒子规模、时间步、物理模型、硬件、并行配置、每步耗时、内存和输出量。区分初始化与稳定计算阶段，并说明外推覆盖的工况。
+Look first at measured records of similar existing cases. When evidence is lacking and the scale of resources would affect a decision, a short trial run may be made within the existing authorization. Record the mesh or particle count, the time step, the physical models, the hardware, the parallel configuration, the time per step, the memory and the output volume. Distinguish the initialization phase from the settled phase of the computation, and state which conditions the extrapolation covers.
 
-给出估计范围及依据。网格加密可能同时改变时间步、迭代次数和通信成本，更多核也未必更快；不要无依据地按单元数或设备数作线性承诺。需要时比较少量可行资源配置，而不是直接申请最多资源。货币成本只有在计费口径已知时才能计算。
+Give an estimated range and its basis. Mesh refinement may change the time step, the iteration count and the communication cost at the same time, and more cores are not necessarily faster; do not make linear promises by cell count or device count without a basis. Where needed, compare a small number of feasible resource configurations instead of requesting the maximum outright. A monetary cost can be calculated only when the charging basis is known.
 
-沿用项目已有计算范围，包括适用的总预算、单作业时限、最大资源、最大并发和允许重试次数；这些是项目约定，不设通用默认额度。缺少会改变本次执行决定的信息时再澄清，已有授权内的准备、试算和修正自主推进。
+Keep to the scope of computation the project already has, including any applicable total budget, time limit per job, maximum resources, maximum concurrency and permitted number of retries; these are project agreements, and there is no general default allowance. Seek clarification only when missing information would change the decision for this execution; within the existing authorization, carry out preparation, trial runs and fixes on your own.
 
-重试以可检验的修正为依据。重复出现同一原因且没有新修正、达到已知重试或资源上限时停止该项重跑，记录下一步所需条件。长期科研预算不能自动当成本次任务的全部可用额度。
+Base a retry on a correction that can be tested. When the same cause recurs with no new correction, or a known retry or resource limit is reached, stop rerunning that item and record the conditions the next step needs. A long-term research budget cannot automatically be treated as the whole allowance available to the current task.
 
-从启动检查进入正式长算，或扩大网格、物理时长、并发规模时，先将已有数据转为简短的本次执行方案：为什么选本机 CPU、GPU 或集群，在什么规模下预计耗时多久、需要多少内存和磁盘，估计有哪些不确定性，以及如何监测和保存检查点。只有启动段计时而没有代表性推进数据时，条件外推可用于发现成本量级，不能包装成可靠完工时间；必要的补充试算也应有范围。
+When moving from the startup check to a long production run, or when enlarging the mesh, the physical duration or the concurrency, first turn the existing data into a short execution plan for this run: why the local CPU, a GPU or the cluster is chosen, how long it is expected to take at what scale, how much memory and disk it needs, what the uncertainties of the estimate are, and how it will be monitored and checkpointed. When only the startup phase has been timed and there are no representative advancement data, a conditional extrapolation can reveal the order of magnitude of the cost but must not be presented as a reliable completion time; any additional trial run that is needed should also have a defined scope.
 
-重要成本尚未讨论时，给出少量可行选项，让用户选择执行安排；已确定方案且已授权时直接运行，不重复询问。“开始计算”沿用已讨论的执行范围，不意味着无限时长、资源或重试。网格或步数写在配置中也不代表用户已经了解和接受其实际成本。
+When significant costs have not yet been discussed, give a small number of feasible options and let the user choose the execution arrangement; when a plan has been settled and authorized, run it directly without asking again. "Start the computation" keeps to the scope of execution already discussed; it does not mean unlimited duration, resources or retries. A mesh or step count written in the configuration likewise does not mean that the user has understood and accepted its actual cost.
 
-明确本轮结束依据：步数或物理时间、适用的收敛或统计目标，以及已约定的时间、资源上限。达到本轮步数与达到研究目标分开记录；若仍需延长，在既有授权内处理，显著超出原范围时说明新证据并确定调整方案。
+Make clear what ends this round: a number of steps or a physical time, the applicable convergence or statistical target, and the agreed limits on time and resources. Record separately that this round's steps have been reached and that the research goal has been reached; if an extension is still needed, handle it within the existing authorization, and when it clearly exceeds the original scope, present the new evidence and settle the adjusted plan.
 
-## 执行中的监测与结束
+## Monitoring during execution, and ending
 
-执行方案应说明监测方式和范围。用户要求持续跟踪，或已接受包含持续监测的执行方案时，使用宿主实际支持的定时检查、调度器信息或监测程序，跟踪到作业结束或明确停止；记录作业／进程标识、日志、检查点和下次检查方式。仅保存日志不等于正在监测；无法持续查询时，应说明实际覆盖范围并安排可执行的接续方式，不承诺已实现后台跟踪。
+The execution plan should state the method and the scope of monitoring. When the user asks for continuous tracking, or has accepted an execution plan that includes continuous monitoring, use the scheduled checks, scheduler information or monitoring programs that the host actually supports, and track until the job ends or is explicitly stopped; record the job or process identifier, the logs, the checkpoints and the way the next check will be made. Merely saving logs is not monitoring; when continuous querying is not possible, state the actual coverage and arrange a workable way to resume, and do not promise background tracking that has not been implemented.
 
-按预计运行时间和风险选择检查间隔，避免逐秒查询或重复发送无变化的状态。查看进度与实际每步耗时、内存／存储、求解诊断和与目标有关的量；更新完工估计，区分正常启动、物理非定常与数值异常。确认发散、资源耗尽或触及约定上限时，按已定方案保存状态并受控停止或调整；不能仅因载荷振荡就终止。没有可行动变化时保持安静，完成、失败或需要改变方案时报告。
+Choose the checking interval from the expected run time and the risk; avoid querying every second or repeatedly sending a status with no change. Look at progress and the actual time per step, memory and storage, solver diagnostics and the quantities relevant to the goal; update the completion estimate, and distinguish a normal startup, physical unsteadiness and numerical anomalies. When divergence, resource exhaustion or the reaching of an agreed limit is confirmed, save the state as planned and stop or adjust in a controlled way; oscillating loads alone are not a reason to terminate. Stay quiet when there is no change that calls for action, and report on completion, on failure or when the plan needs to change.
 
-作业结束后核对退出状态、日志、输出完整性及实际达到的物理时间或迭代范围，再开展目标量和物理结果检查。持续跟踪不授权无限自动重跑或延长计算。
+After the job ends, check the exit status, the logs, the completeness of the output and the physical time or iteration range actually reached, and then carry out the checks of target quantities and physical results. Continuous tracking does not authorize unlimited automatic reruns or extensions of the computation.
 
-## Slurm 作业
+## Slurm jobs
 
-沿用集群提供的提交脚本和所安装 Slurm 版本的帮助。提交前将本次算例、运行目录及脚本与唯一运行记录关联；提交返回后保存原始响应、作业号、集群和时间。已有同一运行记录时先核对其作业状态，避免接续对话造成重复提交。
+Use the submission scripts provided by the cluster and the help of the installed Slurm version. Before submitting, associate this case, the run directory and the script with a unique run record; after the submission returns, save the raw response, the job ID, the cluster and the time. When the same run record already exists, check the status of its job first, so that resuming a conversation does not cause a duplicate submission.
 
-下面仅为命令形状示例，在对应集群执行时替换文件和 `JOB_ID`，并沿用已有执行授权：
+The following only illustrates the shape of the commands; when running on the cluster concerned, replace the file and `JOB_ID`, and keep to the existing execution authorization:
 
 ```sh
 sbatch --parsable job.sbatch
@@ -58,18 +58,18 @@ squeue --jobs=JOB_ID --format="%i|%T|%R"
 sacct --jobs=JOB_ID --parsable2 --format=JobID,State,ExitCode,Elapsed,MaxRSS,AllocTRES
 ```
 
-`sbatch --parsable` 返回作业号，存在集群名时以分号附带；保存完整响应后分别解析。提交命令成功表示调度器接受作业，不表示求解器已运行。[官方 sbatch 文档](https://slurm.schedmd.com/sbatch.html)
+`sbatch --parsable` returns the job ID, followed by a semicolon and the cluster name when there is one; save the complete response and then parse the parts separately. A successful submission command means that the scheduler accepted the job, not that the solver has run. [Official sbatch documentation](https://slurm.schedmd.com/sbatch.html)
 
-查询时保留作业标识。数组子任务与 `.batch`、`.extern`、`.0` 等作业步骤不是同一个层级，不能取第一行状态代替所有计算的状态。`sacct --allocations` 只看分配层、会略去步骤；检查实际计算的退出码和资源统计时需要相应步骤。`MaxRSS` 是步骤内单个任务的最大观测值，不是所有 MPI 进程内存的总和。[官方 sacct 文档](https://slurm.schedmd.com/sacct.html)
+Keep the job identifier when querying. Array tasks and job steps such as `.batch`, `.extern` and `.0` are not at the same level, and the state on the first line cannot stand for the state of all the computation. `sacct --allocations` looks only at the allocation level and omits the steps; checking the exit code and resource statistics of the actual computation needs the corresponding steps. `MaxRSS` is the maximum observed for a single task within a step, not the total memory of all MPI processes. [Official sacct documentation](https://slurm.schedmd.com/sacct.html)
 
-`squeue` 查不到作业时，结合记账记录、日志和产物判断；空结果、连接失败或记账延迟先记为状态未确定，不自动归为失败或重新提交。`COMPLETED` 还需要结合计算步骤、求解器日志和结果检查判断；`OUT_OF_MEMORY`、`TIMEOUT`、`NODE_FAIL` 等保留具体原因。调度状态不能代替物理验证。[官方 squeue 文档](https://slurm.schedmd.com/squeue.html)、[官方状态说明](https://slurm.schedmd.com/job_state_codes.html)
+When `squeue` does not find the job, judge from the accounting records, the logs and the outputs together; an empty result, a failed connection or delayed accounting is first recorded as an undetermined state, and is not automatically classed as a failure or resubmitted. `COMPLETED` still has to be judged together with the computation steps, the solver log and the checks of the results; keep the specific cause for `OUT_OF_MEMORY`, `TIMEOUT`, `NODE_FAIL` and the like. The scheduler state is no substitute for physical validation. [Official squeue documentation](https://slurm.schedmd.com/squeue.html), [official job state codes](https://slurm.schedmd.com/job_state_codes.html)
 
-长作业由调度器继续运行，不需要模型保持会话。将作业号、目录和接续动作关联到前述监测方案；下次接续先读取真实状态。不仅因任务耗时长就自行建立定时自动化；用户要求持续跟踪或已确认包含持续监测的方案时，使用宿主提供的能力落实。
+A long job keeps running under the scheduler and does not need the model to hold the session open. Tie the job ID, the directory and the resuming action to the monitoring plan described above; on the next resumption, read the real state first. Do not set up scheduled automation on your own merely because a task takes a long time; when the user asks for continuous tracking or has confirmed a plan that includes continuous monitoring, carry it out with the capabilities the host provides.
 
-## 故障与经验
+## Failures and lessons learned
 
-先保留失败时的标准输出、错误输出、输入版本和最后可用状态。区分输入或边界错误、依赖或启动错误、内存不足、调度终止、硬件异常及数值发散，再选择修正；不要把全部失败都处理成减小时间步或增加资源。
+First keep the standard output, the error output, the input version and the last usable state at the time of failure. Distinguish input or boundary errors, dependency or startup errors, insufficient memory, termination by the scheduler, hardware faults and numerical divergence, and then choose the correction; do not treat every failure by reducing the time step or adding resources.
 
-修正后作为关联的新尝试记录：改了什么、依据是什么、继承哪个检查点、结果是否改善。重启前核对求解器的检查点兼容条件；保留前一次证据，避免新输出覆盖它。
+After a correction, record it as a linked new attempt: what was changed, on what basis, which checkpoint it inherits and whether the result improved. Before restarting, check the solver's conditions for checkpoint compatibility; keep the evidence of the previous attempt and prevent new output from overwriting it.
 
-有复用价值的经验留下触发条件、求解器版本、证据、有效修正及适用范围。单次成功的办法仍是该条件下的经验，不升级为所有求解器的固定规则。几何与运动学数据转换留在具体项目中处理，按实际数据验证。
+For a lesson worth reusing, keep the triggering condition, the solver version, the evidence, the correction that worked and the range in which it applies. A measure that succeeded once remains a lesson under that condition; it is not promoted to a fixed rule for all solvers. Geometry and kinematics data conversion stays within the specific project and is verified against the actual data.

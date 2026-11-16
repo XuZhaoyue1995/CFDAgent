@@ -1,58 +1,57 @@
-# 求解器选择参考
+# Solver selection reference
 
-需要推荐求解器、比较方法、建立新算例或更换计算环境时，按需读这份参考。它是知识地图，**不是本机安装清单，也不是已运行验证的能力清单**。官方入口核对日期：2026-09-22；实际设置以所用版本的手册、源码和示例为准。
+Read this reference as needed when recommending a solver, comparing methods, creating a new case or changing the computing environment. It is a knowledge map, **not a list of what is installed on this machine, and not a list of capabilities validated by running them**. The official entry points were checked on 2026-09-22; for actual settings, rely on the manual, source code and examples of the version in use.
 
-## 怎样给出有用的推荐
+## How to give a useful recommendation
 
-从用户真正关心的量出发：例如平均升力、瞬态压力峰值、混合效率或失稳机制。结合已有信息判断主导物理、几何与运动、精度需求、可用算力；只追问会改变当前选择的缺项。已有充分依据时直接给出建议，无需先让用户填写完整调查表。
+Start from the quantity the user really cares about: for example mean lift, a transient pressure peak, mixing efficiency or an instability mechanism. Use the information available to judge the dominant physics, the geometry and motion, the accuracy needed and the computing power at hand; ask only about gaps that would change the current choice. When the basis is already sufficient, give the recommendation directly, without first asking the user to fill in a complete questionnaire.
 
-尚未确定求解器时，简要推荐少量合适候选并说明倾向，让用户在了解关键取舍后选择单一求解器，或用多个求解器对照。推荐很明确时可以只给一个主推荐和真正相关的备选，不为展示目录逐项排除全部求解器。用几句话、简短列表或小表即可，不要求固定评分表或完整问卷。
+When no solver has been chosen, briefly recommend a few suitable candidates and say which you lean toward, so that the user can choose a single solver, or a comparison across several, knowing the key trade-offs. When the recommendation is clear-cut, one main recommendation plus the alternatives that are truly relevant is enough; do not rule out every solver one by one just to display the catalog. A few sentences, a short list or a small table will do; no fixed scoring sheet or full questionnaire is required.
 
-只展开会影响当前选择的核心因素：
+Expand only on the core factors that affect the current choice:
 
-- **物理与目标量：** 方程、模型、几何与运动处理是否合适，能否获得用户需要的力、压力、壁面量等结果，有什么关键取舍。
-- **环境与准备成本：** 实际能否执行，需要安装或修复哪些依赖，网格、算例设置与数据转换工作有多少。软件包登记不等于程序可用；本机缺失时也考虑可用的远程资源。
-- **计算代价：** 适用的 CPU/GPU 与并行方式、时间和内存需求。区分实测与估计，未知时给出估算依据或短试算办法，不编造精确耗时、费用或加速比。
-- **验证依据：** 有哪些条件相关的官方验证、相近算例或本项目证据，当前目标还需要哪些关键检查；运行成功与物理结果可信是不同证据。
+- **Physics and target quantities:** whether the equations, the models and the treatment of geometry and motion are suitable; whether the forces, pressures, wall quantities and other results the user needs can be obtained; what the key trade-offs are.
+- **Environment and preparation cost:** whether it can actually be run; which dependencies need installing or repairing; how much work the mesh, the case setup and the data conversion take. A registered software package is not the same as a usable program; when a solver is missing locally, also consider available remote resources.
+- **Compute cost:** the applicable CPU/GPU and parallel modes, and the time and memory requirements. Distinguish measurement from estimate; when the cost is unknown, give the basis of an estimate or a short trial run that would measure it. Do not invent precise runtimes, costs or speedups.
+- **Validation evidence:** which official validations under relevant conditions, similar cases or evidence from this project exist, and which key checks the current goal still needs. A run that succeeds and a physical result that can be trusted are different evidence.
 
-多求解器对照作为可选方案，说明它能回答什么问题，以及额外的建例、网格、计算和结果对齐成本；不默认安排所有候选都运行。用户选择对照时，将所选求解器和比较目标写入后续计划，按 [结果验证参考](result-validation.md) 对齐物理设置和目标量。
+Offer a multi-solver comparison as an option: say what question it can answer, and what it adds in case setup, meshing, computation and alignment of results. Do not arrange by default for every candidate to run. When the user chooses a comparison, write the chosen solvers and the comparison targets into the plan that follows, and align the physical settings and target quantities according to the [result validation reference](result-validation.md).
 
-用户已指定求解器、已确认方案或正在接续该方案时，沿用已有选择；明确授权“你来决定”时，说明选择理由后自主推进。只有新信息实质改变原先取舍时才重新讨论。等待用户选择期间，可继续做不依赖具体求解器的资料、几何和环境检查。
+When the user has named a solver, confirmed a plan or is continuing with one, keep the existing choice; when explicitly authorized with "you decide", state the reasons for the choice and proceed on your own. Reopen the discussion only when new information substantially changes the original trade-off. While waiting for the user's choice, you may continue with documentation, geometry and environment checks that do not depend on a specific solver.
 
-环境尚未安装不等于物理不适用，已安装也不等于最值得推荐。将安装或适配工作作为成本说明，不仅因另一个程序现成可用就静默更换已推荐的路线。现成模板不是能力边界。PyIB 与下列全部求解器平等参与选择，不因其项目归属而默认优先。目录之外有更合适工具时也可以提出。
+An environment that is not yet installed does not make the physics unsuitable, and being installed does not make a solver the best recommendation. Present installation or adaptation work as a cost; do not silently switch away from a recommended route merely because another program happens to be ready. Ready-made templates are not the limit of capability. PyIB takes part in the selection on equal terms with all the solvers below and is not preferred by default on account of its project affiliation. A more suitable tool outside the catalog may also be proposed.
 
-## 候选地图
+## Candidate map
 
-以下顺序不代表排名；“适合考虑”是筛选线索，不是唯一适用范围。
+The order below is not a ranking; "worth considering" is a screening hint, not the only range of application.
 
-| 求解器／家族 | 适合考虑的任务与优势 | 对当前任务最值得分辨的点 | 官方资料与源码入口 |
+| Solver / family | Tasks and strengths worth considering | What to pin down for the current task | Official documentation and source |
 | --- | --- | --- | --- |
-| **OpenFOAM** | 工业内外流、湍流、多相及传热；模型与定制空间广。 | 确认具体发行方、版本及求解模块；`.org` 与 `.com` 的字典、教程和命令不能直接混用。 | [Foundation：文档、源码与下载](https://openfoam.org/)、[OpenCFD：文档与下载](https://www.openfoam.com/) |
-| **SU2** | 航空气动、可压缩流、外形设计与伴随优化。 | 直接求解与伴随能力分别查证；配置关键字、边界 marker、目标函数和编译选项匹配实际版本。 | [用户手册与教程](https://su2code.github.io/docs_v7/home/)、[源码](https://github.com/su2code/SU2) |
-| **FDS** | 火灾烟气、热输运与低速流 LES。 | 判断低速流假设及燃烧、辐射设置是否适合问题，利用其领域验证资料。 | [项目与文档](https://pages.nist.gov/fds/)、[源码](https://github.com/firemodels/fds) |
-| **MFiX** | 气固流化床、颗粒反应器与多相流；提供 TFM、DEM、CGP、PIC 等路线。 | 根据颗粒尺度、碰撞、浓度和成本选择模型；MFiX 与 MFiX-Exa 的实现及配置分别核对。 | [模型介绍、文档与下载入口](https://mfix.netl.doe.gov/products/mfix/) |
-| **DualSPHysics** | SPH 自由液面、波浪、溃坝及流体与运动物体相互作用。 | 粒子分辨率、边界处理和耦合模型比传统单元质量更相关；CPU/GPU 后端检查具体发布版本。 | [功能、文档与源码入口](https://dual.sphysics.org/features/) |
-| **code_saturne** | 工业与能源热流体、湍流和传热，采用有限体积方法。 | 网格与边界分组、所需热物性和湍流模型是否匹配；使用对应版本的预处理与计算设置。 | [项目、文档与下载入口](https://www.code-saturne.org/) |
-| **Basilisk** | 自适应笛卡尔网格上的流动研究，尤其界面流动、液滴、气泡及跨尺度问题。 | 查实际组合的求解头文件、界面与表面张力实现、自适应准则及边界条件；示例可作为可修改的程序。 | [教程、函数、源码与测试入口](https://basilisk.fr/) |
-| **NEK：Nek5000／nekRS** | 高阶谱元流动与热输运、高保真湍流及超算计算。 | 分开确认 Nek5000 与 nekRS 的执行方式；核对曲边网格、阶次及实际后端。nekRS 的文档版本和 OCCA 后端尤其重要。 | [Nek5000 项目](https://nek5000.mcs.anl.gov/)、[Nek5000 源码](https://github.com/Nek5000/Nek5000)、[nekRS 文档与源码入口](https://nekrs.readthedocs.io/en/latest/) |
-| **Palabos** | LBM 科研与工程模型开发；多孔介质、自由液面、颗粒与气泡等。 | 选定碰撞、边界和多相模型，核对单位换算及分辨率；CPU 与 GPU 实现的发布状态和案例支持分别查证。 | [功能与文档](https://palabos.unige.ch/)、[源码](https://gitlab.com/unigespc/palabos) |
-| **OpenLB** | LBM 工程流动、多物理输运、过滤、多孔介质与传热。 | 模型、几何材料编号及格子单位共同决定配置；硬件后端以实际版本和案例构建为准。 | [官方介绍、用户指南与源码下载](https://www.openlb.net/) |
-| **Nektar++** | 高阶 spectral/hp 方法、流动稳定性、转捩与复杂涡结构研究。 | 分辨具体求解器、几何阶次、解阶次及边界；确认所需稳定性分析或非定常模型的实现。 | [项目与发布入口](https://www.nektar.info/)、[功能与文档入口](https://www.nektar.info/features/) |
-| **PyFR** | 高阶通量重构、非结构网格上的尺度解析模拟，可利用 CPU 与多种 GPU 后端。 | 区分方程与时间推进选项、网格和解阶次；后端支持与目标硬件、驱动和精度匹配。 | [项目、文档、源码与测试算例入口](https://www.pyfr.org/) |
-| **PyIB** | Python 浸没边界求解器；NumPy/SciPy CPU 与 CuPy CUDA GPU 路线，适合需要研究或修改 IB 实现的任务。 | 背景离散、浸入表面和运动学共同设置；现有标准 CLI 球体模板与方法可表达的几何分开判断，参见下文。 | [作者仓库、使用说明与源码](https://github.com/XuZhaoyue1995/PyIB) |
+| **OpenFOAM** | Industrial internal and external flows, turbulence, multiphase flow and heat transfer; a broad range of models and room for customization. | Confirm the specific distributor, version and solver module; the dictionaries, tutorials and commands of `.org` and `.com` cannot be mixed directly. | [Foundation: documentation, source and downloads](https://openfoam.org/), [OpenCFD: documentation and downloads](https://www.openfoam.com/) |
+| **SU2** | Aeronautical aerodynamics, compressible flow, shape design and adjoint optimization. | Verify the direct-solve and adjoint capabilities separately; match configuration keywords, boundary markers, objective functions and build options to the actual version. | [User manual and tutorials](https://su2code.github.io/docs_v7/home/), [source](https://github.com/su2code/SU2) |
+| **FDS** | Fire and smoke, heat transport and LES of low-speed flows. | Judge whether the low-speed-flow assumption and the combustion and radiation settings suit the problem; make use of its domain-specific validation material. | [Project and documentation](https://pages.nist.gov/fds/), [source](https://github.com/firemodels/fds) |
+| **DualSPHysics** | SPH free-surface flows, waves, dam breaks and interaction between fluid and moving bodies. | Particle resolution, boundary treatment and coupling models matter more than conventional cell quality; check the CPU/GPU backend for the specific release. | [Features, documentation and source](https://dual.sphysics.org/features/) |
+| **code_saturne** | Industrial and energy thermal-hydraulics, turbulence and heat transfer, using the finite-volume method. | Whether the mesh and boundary groups, the required thermophysical properties and the turbulence model match; use the preprocessing and computation settings of the matching version. | [Project, documentation and downloads](https://www.code-saturne.org/) |
+| **Basilisk** | Flow research on adaptive Cartesian grids, especially interfacial flows, droplets, bubbles and multiscale problems. | Check the solver headers actually combined, the interface and surface-tension implementation, the adaptation criteria and the boundary conditions; the examples can serve as programs to modify. | [Tutorials, functions, source and tests](https://basilisk.fr/) |
+| **NEK: Nek5000 / nekRS** | High-order spectral-element flow and heat transport, high-fidelity turbulence and supercomputing. | Confirm separately how Nek5000 and nekRS are run; check the curved mesh, the order and the actual backend. For nekRS, the documentation version and the OCCA backend matter especially. | [Nek5000 project](https://nek5000.mcs.anl.gov/), [Nek5000 source](https://github.com/Nek5000/Nek5000), [nekRS documentation and source](https://nekrs.readthedocs.io/en/latest/) |
+| **Palabos** | LBM research and engineering model development; porous media, free surfaces, particles and bubbles, among others. | Settle the collision, boundary and multiphase models, and check the unit conversion and resolution; verify separately the release status and case support of the CPU and GPU implementations. | [Features and documentation](https://palabos.unige.ch/), [source](https://gitlab.com/unigespc/palabos) |
+| **OpenLB** | LBM engineering flows, multiphysics transport, filtration, porous media and heat transfer. | The model, the geometry material numbers and the lattice units together determine the configuration; hardware backends depend on the actual version and on how the case is built. | [Official introduction, user guide and source download](https://www.openlb.net/) |
+| **Nektar++** | High-order spectral/hp methods; flow stability, transition and research on complex vortex structures. | Identify the specific solver, the geometry order, the solution order and the boundaries; confirm that the stability analysis or unsteady model you need is implemented. | [Project and releases](https://www.nektar.info/), [features and documentation](https://www.nektar.info/features/) |
+| **PyFR** | High-order flux reconstruction and scale-resolving simulation on unstructured meshes; can use CPUs and several GPU backends. | Distinguish the equation and time-stepping options, and the mesh and solution orders; match backend support to the target hardware, drivers and precision. | [Project, documentation, source and test cases](https://www.pyfr.org/) |
+| **PyIB** | A Python immersed-boundary solver with a NumPy/SciPy CPU route and a CuPy CUDA GPU route; suited to tasks that need to study or modify an IB implementation. | The background discretization, the immersed surface and the kinematics are set together; judge the existing standard CLI sphere template separately from the geometries the method can express. See below. | [Author's repository, usage notes and source](https://github.com/XuZhaoyue1995/PyIB) |
 
-### PyIB 的方法与当前入口
+### PyIB: method and current entry points
 
-软件作者 Zhaoyue Xu 已说明，薄壁可以采用局部单侧无限厚的处理思路；不要从当前标准 CLI 球体示例推断方法只支持封闭球体。建立薄壁或昆虫算例时，读取所用提交的几何、法向、流体侧、运动学和后处理实现，判断哪些可以直接使用、哪些需要补充程序与验证。
+The software's author, Zhaoyue Xu, has stated that thin walls can be handled with a locally one-sided, infinitely thick treatment; do not infer from the current standard CLI sphere example that the method supports only closed spheres. When building a thin-wall or insect case, read the geometry, normal, fluid-side, kinematics and post-processing implementations of the commit in use, and judge which parts can be used directly and which need additional code and validation.
 
-PyIB `0.1.0rc2` 提供 CPU/GPU 后端、JSON 算例、网格生成、续算、压力场重构和表面压力修正；该版本不包含切应力重构。求解器与压力模块已有 D32/D40、Re₀=0.2 振荡球的[验证记录和复核数据](https://github.com/XuZhaoyue1995/PyIB/blob/main/docs/VALIDATION.md)。使用这一版本时直接利用已有证据，结合目标工况设置算例并安排相应结果对照；不应再将它笼统描述为“尚未进行物理验证”。具体功能、配置与后续版本状态以所用提交的 README 和 `docs/POSTPROCESSING.md` 为准，CLI 模板数量不限制后续开发。
+PyIB `0.1.0rc2` provides CPU/GPU backends, JSON cases, mesh generation, restart, pressure-field reconstruction and surface-pressure correction; this version does not include shear-stress reconstruction. The solver and the pressure module have [validation records and cross-check data](https://github.com/XuZhaoyue1995/PyIB/blob/main/docs/VALIDATION.md) for an oscillating sphere at D32/D40 and Re₀=0.2. When using this version, use the existing evidence directly, set up the case for the target conditions and arrange the corresponding comparison of results; it should no longer be described loosely as "not yet physically validated". For specific features, configuration and the status of later versions, rely on the README and `docs/POSTPROCESSING.md` of the commit in use; the number of CLI templates does not limit later development.
 
-## 实际使用时补充什么
+## What to add in actual use
 
-只读取与当前决策有关的内容，通常先看官方教程和相近案例，再看配置说明；遇到不明确的算法或行为，再定位源码。记录实际使用的版本或提交，以及关键资料路径／链接，避免每次把整套源码塞进对话。
+Read only what bears on the current decision: usually the official tutorials and similar cases first, then the configuration documentation; go to the source code when an algorithm or a behavior is unclear. Record the version or commit actually used and the paths or links of the key material, so that the whole source tree is not pasted into the conversation each time.
 
-工作笔记里用几句话留下：用户选择或授权自主决定的方案、关键理由与成本、真正相关的备选、仍待核实的假设；如果选择多求解器对照，记录比较目标和后续安排。只列为备选不代表已安排运行。用户指定求解器时照实记录，不包装成自主选择。更换方法时补充改变判断的新证据。
+In the working notes, leave a few sentences on: the plan the user chose or authorized you to decide, the key reasons and costs, the alternatives that are truly relevant, and the assumptions still to be verified. If a multi-solver comparison was chosen, record the comparison targets and what follows. Being listed as an alternative does not mean a run has been scheduled. When the user names the solver, record that as it is; do not present it as your own choice. When changing method, add the new evidence that changed the judgment.
 
-CPU/GPU 与并行配置属于实际执行方案。用编译和环境信息确认兼容性，必要时用短试算测时间与内存；“有 GPU”或“超算规模大”本身不是更快或更准的证据。保持推荐的物理依据与暂时的环境便利各自清楚。
+CPU/GPU and parallel configuration belong to the actual execution plan. Confirm compatibility from build and environment information, and where necessary measure time and memory with a short trial run; "it has a GPU" or "the supercomputer is large" is not in itself evidence of being faster or more accurate. Keep the physical basis of a recommendation and temporary convenience of the environment clearly apart.
 
-准备离散与网格后，结合所选方法阅读 [网格与离散质量参考](mesh-quality.md)，并使用对应求解器的官方网格／离散检查工具与文档。
+After preparing the discretization and the mesh, read the [mesh and discretization quality reference](mesh-quality.md) with the chosen method in mind, and use the official mesh and discretization checking tools and documentation of the solver concerned.

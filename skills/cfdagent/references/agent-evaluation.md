@@ -1,29 +1,29 @@
-# 开发时检查插件是否有帮助
+# Checking during development whether the plugin helps
 
-仅在用户要求开发、评估或修改 CFDAgent 时使用。日常 CFD 对话不触发这份评估，也不要求使用者填写评分表。
+Use only when the user asks to develop, evaluate or modify CFDAgent. Everyday CFD conversations do not trigger this evaluation, and users are not asked to fill in a scoring sheet.
 
-## 比较什么
+## What to compare
 
-用未专门为插件写答案的真实任务，比较同一宿主与模型下的普通 Agent 和加载 CFDAgent 的 Agent。双方拿到相同原始材料、用户目标、可用工具、计算资源和完成条件；仅插件资料与指引的有无不同。环境、模型、版本和资源差异要记录。
+Using real tasks whose answers were not written specially for the plugin, compare a plain agent with an agent that has CFDAgent loaded, on the same host and model. Both receive the same raw material, user goal, available tools, computing resources and completion conditions; only the presence of the plugin's material and guidance differs. Record any differences in environment, model, version and resources.
 
-原始问题与评价依据在试用前冻结。把任务交给独立会话或子代理，不给预期答案、疑似错误或修复提示；先保留回答、改动和执行证据，再评价。参考资料中可以有方法，任务的测试答案不要混入参考。
+Freeze the original question and the basis of evaluation before the trial. Hand the task to an independent session or subagent, without the expected answer, suspected errors or hints for a fix; keep the answers, the changes and the execution evidence first, and evaluate afterwards. The reference material may contain methods, but the test answers of a task must not be mixed into it.
 
-适合覆盖的情形：开放式推荐、已有指定求解器、纯物理讨论、实际文件检查、单位或归一化混用、运行中断后的恢复，以及已有验证结果的接续使用。加入不同求解器的问题，不把推荐 PyIB 当作正确标签；允许多个合理方案。
+Situations worth covering: an open-ended recommendation, a solver already specified, a pure discussion of physics, inspection of actual files, mixed-up units or normalization, recovery after an interrupted run, and continued use of existing validation results. Include questions for different solvers, and do not treat recommending PyIB as the correct label; allow several reasonable solutions.
 
-## 评价实际结果
+## Evaluate the actual results
 
-- 物理设置与量纲是否正确，是否识别了影响结论的信息缺口？
-- 结论是否由实际文件、数值和参考来源支持；有没有捏造已运行或已验证？
-- 是否尊重用户当前目标、输入和授权；简单讨论有没有被强迫变成完整流程？
-- 是否能处理新问题、利用已有成果、保留证据并从笔记接续？
-- 人工纠正次数、完成质量、耗时、模型用量和计算成本如何？不可获得的计量写未知。
+- Are the physical setup and the dimensions correct, and were the information gaps that affect the conclusion recognized?
+- Is the conclusion supported by actual files, values and reference sources; was anything fabricated as having been run or validated?
+- Were the user's current goal, inputs and authorization respected; was a simple discussion forced into a full workflow?
+- Can it handle a new problem, use existing results, keep evidence and resume from notes?
+- How do the number of human corrections, the quality of completion, the time taken, the model usage and the compute cost compare? Write "unknown" for measurements that cannot be obtained.
 
-不按标题、关键词、回答长度或是否遵循某套固定步骤打分。失败、超时、拒绝和恢复也纳入记录；不只展示成功示例。
+Do not score by headings, keywords, length of answer or adherence to some fixed set of steps. Failures, timeouts, refusals and recoveries are also recorded; do not show only the successful examples.
 
-## 从证据改指引
+## Change the guidance from evidence
 
-单次对照用于找问题，不足以宣称优于通用 Codex。要作研究结论，再使用多类留出任务和重复试验，报告不确定性与资源条件；可比较仅资料、资料加指引以及加可选工具的贡献。
+A single comparison serves to find problems; it is not enough to claim superiority over general-purpose Codex. For a research conclusion, go on to use several classes of held-out tasks and repeated trials, and report the uncertainty and the resource conditions; the contributions of material alone, material plus guidance, and added optional tools can be compared.
 
-发现重复问题时做局部修改，再检查对应情形及受影响的相邻任务。若新增规则让开放任务更僵硬或表现退步，缩小其适用范围或移除。不要为每次偶发失败添加永久限制。
+When a recurring problem is found, make a local change, then check the corresponding situation and the neighboring tasks it affects. If a new rule makes open tasks more rigid or performance worse, narrow its range of application or remove it. Do not add a permanent restriction for every occasional failure.
 
-记录样式可以很短：任务与原始材料 → 两组实际产物 → 评价依据 → 观察与局限 → 是否需要修改。真正独立的基线不能提前读取插件或试用组答案。
+The record can be very short: task and raw material → the actual outputs of the two groups → basis of evaluation → observations and limitations → whether a change is needed. A truly independent baseline must not read the plugin or the answers of the trial group in advance.

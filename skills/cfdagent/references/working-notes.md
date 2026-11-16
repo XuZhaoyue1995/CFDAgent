@@ -1,56 +1,56 @@
-# 工作笔记：让下一次对话能接着做
+# Working notes: so that the next conversation can pick up the work
 
-笔记服务于研究工作，不是必须填写的表格。纯概念讨论或一次性小问题通常无需创建文件。
+Notes serve the research work; they are not a form that must be filled in. A purely conceptual discussion or a small one-off question usually needs no file.
 
-## 找到与接续
+## Finding the notes and resuming
 
-进入已有项目时，先看用户指出的记录和项目中现有的工作日志，避免另建一套。如果没有，实质性算例工作可在该项目目录创建 `CFD_WORKLOG.md`。多个案例可以用相邻文件或已有项目结构区分，按规模选择。
+On entering an existing project, look first at the records the user points to and at the working log already in the project, and avoid starting a second set. If there is none, substantive case work can create `CFD_WORKLOG.md` in that project directory. Several cases can be separated by adjacent files or by the existing project structure, chosen according to scale.
 
-接续时，从笔记定位算例、输入、配置、日志和结果，再检查当前事实。记载“昨天作业运行中”不是今天仍在运行的证据；关键状态应查询真实进程或调度器。若本轮无法查询，保留时间并标明未重新核实，不因此盲目重复提交。
+When resuming, locate the case, the inputs, the configuration, the logs and the results from the notes, and then check the current facts. A record that "the job was running yesterday" is not evidence that it is still running today; key states should be queried from the real process or scheduler. If no query is possible in this round, keep the time and mark the state as not re-verified, and do not resubmit blindly on that account.
 
-## 记什么
+## What to record
 
-保持首页短小，能回答以下问题即可，不必每项都有独立标题：
+Keep the front page short. It is enough that it answers the following questions, and each need not have its own heading:
 
-- 当前要研究什么、目标量是什么，用户已经做了哪些决定？
-- 几何、数据、单位、坐标、物性和运动学来自哪里？哪些仍是待确认的假设？
-- 选了什么求解器与版本，为什么；有哪些被比较过的方案？
-- 目前做到哪里，配置、网格、脚本、运行目录或 Slurm 作业号在哪里？
-- 本轮已确定的计算范围、资源与耗时估计依据、适用上限、结束条件和监测安排是什么；哪些延长或重试尚未决定？
-- 已检查什么，结论由哪个文件和指标支持；哪些尚未测？
-- 下一步是什么，有无真正需要用户补充的信息？
+- What is being studied now, what are the target quantities, and which decisions has the user already made?
+- Where do the geometry, data, units, coordinates, material properties and kinematics come from? Which are still assumptions awaiting confirmation?
+- Which solver and version were chosen, and why; which options were compared?
+- How far has the work got, and where are the configuration, the mesh, the scripts, the run directory or the Slurm job ID?
+- For this round, what are the settled scope of computation, the basis of the resource and time estimates, the applicable upper limits, the stopping conditions and the monitoring arrangement; which extensions or retries have not yet been decided?
+- What has been checked, and which file and metric support each conclusion; what has not yet been measured?
+- What is the next step, and is there any information the user really needs to supply?
 
-内容随任务而变。没用超算就不填作业号，没做计算就不写“计算完成”。避免把整段对话、长日志、凭据或大数组复制进笔记。
+The content changes with the task. If no supercomputer was used, leave out the job ID; if nothing was computed, do not write "computation complete". Avoid copying whole stretches of conversation, long logs, credentials or large arrays into the notes.
 
-## 将结果对应回输入
+## Tracing results back to inputs
 
-一次运行有独立位置或项目已有的运行标识即可；记录关键输入/配置的快照或哈希、求解器版本/提交、必要的命令和环境，以及输出目录。小项目不需要新建数据库，已有运行清单可以直接链接。
+It is enough for a run to have its own location or a run identifier the project already uses. Record a snapshot or hash of the key inputs and configuration, the solver version or commit, the necessary commands and environment, and the output directory. A small project does not need a new database, and an existing run list can simply be linked.
 
-修改算例时保留修改前后关系：改了哪些物理或数值参数，为什么，哪个结果属于哪个版本。图表引用产生它的数据、脚本和统计区间；来源丢失时先标为待核实，不按最新配置猜测旧图的工况。
+When modifying a case, keep the relation between before and after: which physical or numerical parameters were changed, why, and which result belongs to which version. A figure cites the data, the script and the statistical interval that produced it; when the source is lost, mark it as to be verified first, and do not guess the conditions of an old figure from the latest configuration.
 
-环境信息可保存在项目已有记录中，变化时更新。故障经验写清适用版本、现象、证据、实际修正及效果；候选原因与确认原因分开。一次改参数后能运行不自动证明找到了根因。经典案例的本地运行记录与上游参考数据分开保留，参见 [benchmark-library.md](benchmark-library.md)。
+Environment information can be kept in the project's existing records and updated when it changes. Write lessons from failures with the version they apply to, the symptom, the evidence, the actual correction and its effect, and keep candidate causes apart from confirmed ones. A case that runs after one parameter change does not automatically prove that the root cause was found. Keep local run records of classic cases separate from the upstream reference data; see [benchmark-library.md](benchmark-library.md).
 
-## 什么时候更新
+## When to update
 
-在有意义的决定、运行提交、主要检查、失败修正和交接时简短更新。长计算提交后及时记录作业号与目录，便于恢复；无需每次工具调用都写一条。
+Update briefly at meaningful decisions, run submissions, major checks, corrections of failures and handovers. After submitting a long computation, record the job ID and the directory promptly so that the work can be recovered; there is no need to write an entry for every tool call.
 
-保留当前摘要，并在下方追加带时间的关键进展。修正过去的错误时注明修正及依据，保留有价值的失败尝试。重跑使用独立运行位置或项目已有版本管理方式，避免失去对照证据。用户已有笔记应合并更新，不整份覆盖。
+Keep a current summary, and append the key progress below it with times. When correcting a past mistake, note the correction and its basis, and keep failed attempts that are of value. A rerun uses its own run location or the project's existing version management, so that evidence for comparison is not lost. Notes the user already has should be merged and updated, not overwritten wholesale.
 
-## 可选的最小起点
+## An optional minimal starting point
 
 ```markdown
-# CFD 工作笔记
+# CFD working notes
 
-更新时间：日期与时区
-当前目标：……
-当前结论与选择：……（区分已确认、假设、待核实）
-相关文件：……
-执行状态：……（最近查询时间；未执行可直接写未执行）
-验证证据：……（日志/数据位置、指标、适用判据；尚未测则说明）
-下一步：……
+Updated: date and time zone
+Current goal: ...
+Current conclusions and choices: ... (distinguish confirmed, assumed, to be verified)
+Related files: ...
+Execution status: ... (time of the latest query; if nothing has run, simply write "not run")
+Validation evidence: ... (log or data location, metric, applicable criterion; if not yet measured, say so)
+Next step: ...
 
-## 关键进展
-- 时间：做了什么、依据是什么、结果文件在哪里。
+## Key progress
+- Time: what was done, on what basis, and where the result files are.
 ```
 
-“下次能准确继续工作”比字段完整更重要。报告用户时概括变化，需要时给出笔记链接。
+"The work can be continued accurately next time" matters more than complete fields. When reporting to the user, summarize the changes and give a link to the notes when needed.

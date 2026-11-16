@@ -1,39 +1,39 @@
-# 物理建模与算例设置
+# Physical modeling and case setup
 
-在讨论模型、创建或修改算例、排查设置问题时按需使用。沿用已有数据和已确认选择；只追问会改变判断的缺项，不把下面内容变成每次必填的清单。
+Use as needed when discussing models, creating or modifying a case, or troubleshooting a setup. Keep existing data and confirmed choices; ask only about gaps that would change a judgment, and do not turn what follows into a checklist to be filled in every time.
 
-## 从目标量决定模型
+## Let the target quantity decide the model
 
-- 先弄清需要解释或预测的量：平均载荷、峰值冲击、频率、局部应力、混合或热流，对模型和分辨率的要求不同。依据相关尺度讨论可压缩性、层流／湍流、相间作用、传热和运动边界；不因为求解器支持某模型就启用它。
-- 区分已有事实、暂用假设和需要对照的模型选择。信息足以先比较方法时可以讨论；缺少会决定物理问题的物性或边界条件时，不用“常见值”静默替代。
-- 稳态计算是否合适取决于流动物理和目标量。残差或力持续振荡可能是物理非定常，也可能是数值问题；先检查证据，不为了得到平直曲线而任意增加耗散。初步趋势与瞬态峰值可以需要不同的计算方案。
+- First establish which quantity needs to be explained or predicted: mean loads, peak impact, frequency, local stress, mixing or heat flux place different demands on the model and the resolution. Discuss compressibility, laminar or turbulent flow, interphase interaction, heat transfer and moving boundaries on the basis of the relevant scales; do not enable a model merely because the solver supports it.
+- Distinguish established facts, provisional assumptions and model choices that need a comparison. When the information is enough to compare methods first, the discussion can go ahead; when a material property or boundary condition that decides the physical problem is missing, do not silently substitute a "typical value".
+- Whether a steady computation is appropriate depends on the flow physics and the target quantity. Residuals or forces that keep oscillating may be physical unsteadiness or a numerical problem; check the evidence first, and do not add dissipation arbitrarily to obtain a flat curve. A preliminary trend and a transient peak may need different computational plans.
 
-## 单位、参考尺度与坐标
+## Units, reference scales and coordinates
 
-- 跨文件连接数据时，核对原始单位、进入求解器后的单位及输出口径。常见混淆包括 mm／m、ms／s、degree／radian、转每分／角速度、动力黏度／运动黏度。量纲标签正确不代表数值已正确换算。
-- 无量纲算例记录所采用的长度、速度、密度等参考尺度及定义。例如采用 `t*=t Uref/Lref` 时，时间步、运动频率和输出时间也要对应转换；压力尺度究竟是 `ρU²`、`ρU²/2` 或其他定义应查配置，不能猜。速度参考接近零时，根据实际驱动选取有意义的尺度。
-- 更换单位是同一物理算例的表示转换；改变真实几何尺度是另一种操作。转换几何时联查有量纲的位移、速度、时间和物性，按各自量纲处理；若只缩放几何并保持其他物理量不变，应明确 Reynolds 数等可能随之改变。
-- 记录坐标系、手性、原点、旋转中心、旋转顺序和正方向。几何旋转后，速度／运动方向、重力、力的投影轴与边界法向要与之对应；区分刚体坐标变换与进入随体／旋转参考系，后者还涉及相对速度和相应方程项。
-- 压力字段名不能替代定义。核对它表示绝对／表压、运动压力还是扣除静水项的压力；对不可压定密度模型，`p/ρ` 与 Pa 的区别直接影响设置和载荷解释。[OpenFOAM 官方示例](https://doc.openfoam.com/2312/tools/processing/solvers/algorithm-kinematic-pressure/)
+- When connecting data across files, check the original units, the units after entering the solver and the convention of the output. Common confusions include mm/m, ms/s, degree/radian, revolutions per minute/angular velocity, and dynamic/kinematic viscosity. A correct dimension label does not mean the value has been converted correctly.
+- For a nondimensional case, record the reference scales adopted for length, velocity, density and so on, and their definitions. For example, with `t*=t Uref/Lref`, the time step, the motion frequency and the output times must be converted accordingly; whether the pressure scale is `ρU²`, `ρU²/2` or another definition should be looked up in the configuration, not guessed. When the reference velocity is close to zero, choose a meaningful scale from what actually drives the flow.
+- Changing units is a change of representation of the same physical case; changing the real geometric scale is a different operation. When converting geometry, check the dimensional displacements, velocities, times and material properties together and treat each according to its dimension; if only the geometry is scaled and the other physical quantities are kept unchanged, state explicitly that the Reynolds number and similar parameters may change with it.
+- Record the coordinate system, handedness, origin, center of rotation, rotation order and positive directions. After the geometry is rotated, the velocity or motion direction, gravity, the axes on which forces are projected and the boundary normals must correspond to it. Distinguish a rigid-body coordinate transformation from entering a body-fixed or rotating reference frame; the latter also involves relative velocity and the corresponding terms in the equations.
+- The name of a pressure field is no substitute for its definition. Check whether it denotes absolute or gauge pressure, kinematic pressure, or pressure with the hydrostatic term removed; for an incompressible constant-density model, the difference between `p/ρ` and Pa directly affects the setup and the interpretation of loads. [OpenFOAM official example](https://doc.openfoam.com/2312/tools/processing/solvers/algorithm-kinematic-pressure/)
 
-## 检查文件之间是否表达同一个问题
+## Check that the files describe the same problem
 
-- 编辑边界时同时查看网格中的实际边界名称、几何类型和场变量配置；改名、重新划网格或切换区域后，检查旧名称是否失效、是否遗漏或误用默认条件。周期／耦合接口还要核对配对和映射方向。
-- 边界条件应与所解方程、变量定义和入口／出口流向相容，避免在同一位置不恰当地同时强制相互关联的量。检查压力参考的处理，以及回流时需要给定的物理量；具体组合依求解器和模型手册决定。
-- 运动壁面速度、网格运动、嵌入边界运动与参考系设置应一致，避免把同一运动重复施加。薄壁、双面或单侧处理按实际方法解释，不能用某个现成案例的几何限制代替求解器的方法能力。
-- 更换模型或热物性时，联查所需初值、辅助方程和边界字段。使用旧结果续算时检查网格、字段和物理设置是否仍相容；需要映射或重新初始化时保留原始结果。
+- When editing boundaries, look at the actual boundary names in the mesh, the geometric types and the field configuration together. After renaming, remeshing or switching regions, check whether old names have become invalid, and whether anything has been left out or a default condition applied by mistake. For periodic or coupled interfaces, also check the pairing and the mapping direction.
+- Boundary conditions should be compatible with the equations solved, the definitions of the variables and the inflow or outflow direction; avoid improperly imposing interrelated quantities at the same location. Check how the pressure reference is handled, and which physical quantities must be specified under backflow; the specific combination depends on the solver and the model manual.
+- The moving-wall velocity, the mesh motion, the embedded-boundary motion and the reference-frame settings should be consistent, so that the same motion is not applied twice. Interpret thin-wall, two-sided or one-sided treatments according to the actual method; the geometric limits of some ready-made example are not a substitute for the methodological capability of the solver.
+- When changing a model or the thermophysical properties, check the required initial values, auxiliary equations and boundary fields together. When restarting from old results, check that the mesh, the fields and the physical settings are still compatible; when mapping or reinitialization is needed, keep the original results.
 
-## 用数值设置支撑当前目标
+## Numerical settings that support the current goal
 
-- 根据实际离散、时间推进和网格选择时间步或 CFL。对流、声学、扩散、界面及运动可能引入不同限制；不跨方法套用一个通用阈值。
-- 隐式方法能够稳定运行，不等于时间精度足够；物理时间步与稳态伪时间步、dual-time 内迭代步不是同一件事。需要解析运动、涡脱落或冲击时，结合相关时间尺度和目标量的时间步敏感性判断，另看每个物理步是否充分求解。
-- 近壁处理与湍流模型、局部网格应匹配。离散格式和限制器需要同时考虑稳定性与耗散；临时稳定措施若改变了目标量，应在笔记中说明并复查，不能凭残差降低就认定改善了物理结果。
-- 已有可靠设置可直接沿用。提出新参数时说明依据是对应版本手册、同类验证算例还是待检验估计；根据短试算暴露的问题调整，不无差别扫描全部参数。
+- Choose the time step or CFL number according to the actual discretization, time integration and mesh. Convection, acoustics, diffusion, interfaces and motion may each bring a different limit; do not carry one universal threshold across methods.
+- An implicit method running stably does not mean that the temporal accuracy is sufficient, and the physical time step is not the same thing as a steady-state pseudo-time step or a dual-time inner iteration. When motion, vortex shedding or impact must be resolved, judge from the relevant time scales and from the sensitivity of the target quantity to the time step, and also check whether each physical step is solved adequately.
+- The near-wall treatment should match the turbulence model and the local mesh. Discretization schemes and limiters need both stability and dissipation to be considered; if a temporary stabilizing measure changes the target quantity, say so in the notes and review it. A lower residual alone does not show that the physical result has improved.
+- Reliable existing settings can be kept as they are. When proposing new parameters, state whether the basis is the manual of the matching version, a similar validated case or an estimate still to be tested; adjust according to the problems a short trial run exposes, rather than scanning all parameters indiscriminately.
 
-外部几何或运动学数据特事特办：读取该项目实际文件和定义，按需要编写、检查转换程序。本参考不建立统一的数据转换框架。
+External geometry or kinematics data are handled case by case: read the project's actual files and definitions, and write and check conversion programs as needed. This reference does not set up a unified data-conversion framework.
 
-## 需要进一步核对时
+## When further checking is needed
 
-- [OpenFOAM 文件格式与量纲](https://www.openfoam.com/documentation/user-guide/2-openfoam-cases/2-2-basic-inputoutput-file-format)：核对字段量纲和输入含义；其他求解器按其实际版本查证。
-- [NASA 时间收敛说明](https://www.grc.nasa.gov/www/wind/valid/tutorial/tempconv.html)：非定常结果需关注物理时间步敏感性。
-- [NASA Wind-US 时间推进说明](https://www.grc.nasa.gov/www/winddocs/user/keywords/temporal.html)：物理时间步与伪时间内迭代的具体示例；其中参数语法和默认值不推广到其他程序。
+- [OpenFOAM file format and dimensions](https://www.openfoam.com/documentation/user-guide/2-openfoam-cases/2-2-basic-inputoutput-file-format): check field dimensions and the meaning of inputs; for other solvers, verify against their actual version.
+- [NASA notes on temporal convergence](https://www.grc.nasa.gov/www/wind/valid/tutorial/tempconv.html): unsteady results need attention to sensitivity to the physical time step.
+- [NASA Wind-US notes on time advancement](https://www.grc.nasa.gov/www/winddocs/user/keywords/temporal.html): a concrete example of physical time steps versus pseudo-time inner iterations; the parameter syntax and defaults there do not carry over to other programs.

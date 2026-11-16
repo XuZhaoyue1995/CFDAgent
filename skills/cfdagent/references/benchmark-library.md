@@ -1,24 +1,23 @@
-# 经典案例与验证资料入口
+# Entry points to classic cases and validation material
 
-需要学习配置、检查安装、验证改动或寻找物理对照时查阅。以下是上游官方资料索引，2026-09-22 核对可检索内容；**不代表 CFDAgent 已在本地运行或验收这些案例**，也不限制其他求解器和新算例。
+Consult when you need to learn a configuration, check an installation, verify a change or find a physical comparison. The following is an index of official upstream material whose retrievable content was checked on 2026-09-22; **it does not mean that CFDAgent has run or accepted these cases locally**, and it does not restrict other solvers or new cases.
 
-| 官方入口 | 可查的案例或内容 | 使用时留意 |
+| Official entry point | Cases or content to be found | What to watch when using it |
 | --- | --- | --- |
-| [OpenFOAM 后向台阶，v2212](https://doc.openfoam.com/2212/examples/verification-validation/turbulent/backward-facing-step/) | 湍流分离、再附与速度/壁面量的实验对照 | 记录发行分支、模型和近壁设置，不能只匹配 Re |
-| [SU2 教程集](https://su2code.github.io/tutorials/home/) | 层流平板、圆柱、超声速楔、ONERA M6 等 | 按方程、可压缩性和教程版本取配置；示例运行完成不等于完成验证 |
-| [FDS 官方手册](https://pages.nist.gov/fds/manuals.html) | 分开的 Verification Guide 与 Validation Guide | 选与目标火灾/烟热输运现象相符的数据集，读取实验条件和不确定度 |
-| [MFiX V&V 手册第三版](https://mfix.netl.doe.gov/doc/vvuq-manual/main/html/index.html) | MMS、Poiseuille/Couette、颗粒沉降、DEM/PIC 测试 | 不同模型分开验收；制造解检验方程实现，不能替代实验验证 |
-| [DualSPHysics 官方 Testcases](https://github.com/DualSPHysics/DualSPHysics/wiki/7.-Testcases) | 溃坝、晃荡、造波及配套参考数据说明 | 分清二维/三维案例、边界处理与测点位置，按安装版本核对文件名 |
-| [Basilisk 官方测试目录](https://www.basilisk.fr/src/test/README) | VOF 平流、毛细波、静滴、嵌入边界等测试 | 自适应准则、界面量和误差范数取对应测试定义；圆柱 Couette 不等于平板 Couette |
-| [Nek5000 官方教程](https://nek5000.github.io/NekDoc/tutorials.html) | 充分发展层流、周期丘陵、共轭传热等 | 单元数与谱元阶数都影响分辨率；不直接当作 nekRS 已验收证据 |
-| [PyFR v2.1 官方示例](https://pyfr.readthedocs.io/en/v2.1/examples.html) | Euler 涡、Couette、不可压圆柱、Taylor–Green 等 | 高阶格式与后端版本需记录；这些小示例不适合直接作性能/扩展性研究 |
+| [OpenFOAM backward-facing step, v2212](https://doc.openfoam.com/2212/examples/verification-validation/turbulent/backward-facing-step/) | Turbulent separation and reattachment, with experimental comparison of velocity and wall quantities | Record the release branch, the model and the near-wall settings; matching Re alone is not enough |
+| [SU2 tutorial collection](https://su2code.github.io/tutorials/home/) | Laminar flat plate, cylinder, supersonic wedge, ONERA M6 and others | Take the configuration according to the equations, the compressibility and the tutorial version; an example that runs to completion is not a completed validation |
+| [FDS official manuals](https://pages.nist.gov/fds/manuals.html) | The separate Verification Guide and Validation Guide | Choose data sets that match the target fire or smoke-and-heat transport phenomenon, and read the experimental conditions and uncertainties |
+| [DualSPHysics official test cases](https://github.com/DualSPHysics/DualSPHysics/wiki/7.-Testcases) | Dam break, sloshing, wave generation and notes on the accompanying reference data | Tell apart two- and three-dimensional cases, boundary treatments and gauge positions; check file names against the installed version |
+| [Basilisk official test directory](https://www.basilisk.fr/src/test/README) | Tests of VOF advection, capillary waves, a static droplet, embedded boundaries and others | Take the adaptation criterion, the interface quantities and the error norm from the definition of the test concerned; cylindrical Couette flow is not plane Couette flow |
+| [Nek5000 official tutorials](https://nek5000.github.io/NekDoc/tutorials.html) | Fully developed laminar flow, periodic hill, conjugate heat transfer and others | Both the number of elements and the spectral-element order affect resolution; do not take these directly as evidence that nekRS has been accepted |
+| [PyFR v2.1 official examples](https://pyfr.readthedocs.io/en/v2.1/examples.html) | Euler vortex, Couette flow, incompressible cylinder, Taylor–Green vortex and others | Record the high-order scheme and the backend version; these small examples are not suitable for direct use in performance or scaling studies |
 
-其他求解器依 [solver-selection.md](solver-selection.md) 的官方入口查找；索引空缺不是该求解器能力不足。PyIB 的项目证据来自对应仓库和实际运行记录，不因旗舰地位获得自动验证结论。
+For other solvers, search from the official entry points in [solver-selection.md](solver-selection.md); a gap in this index is not a lack of capability in that solver. Project evidence for PyIB comes from its repository and from actual run records; its flagship position does not earn it an automatic validation conclusion.
 
-## 把参考变成本项目证据
+## Turning a reference into evidence for this project
 
-只在确有用途时引入案例。记录来源 URL/DOI、版本或提交、案例名、方程与参数范围、边界/几何假设、参考量定义、单位、参考数据文件及不确定度。引用图表数字时保存原图/表编号和提取方式；不要凭图像印象写成精确实验值。
+Bring in a case only when it serves a real purpose. Record the source URL or DOI, the version or commit, the case name, the equations and parameter range, the boundary and geometry assumptions, the definition of the reference quantity, the units, the reference data files and the uncertainty. When quoting numbers from a figure or table, keep the number of the original figure or table and the extraction method; do not write an impression of an image as a precise experimental value.
 
-区分：官方示例、官方验证数据、本地复现、当前工况验证。记录实际改动、运行标识、目标量误差、结果文件与适用范围。已复现案例可以复用其证据，但新版本、模型或参数变化需判断是否仍被覆盖。
+Distinguish four things: an official example; official validation data; a local reproduction; and validation of the current operating condition. Record the actual changes, the run identifier, the error in the target quantity, the result files and the range of applicability. The evidence of a reproduced case can be reused, but with a new version, model or parameter change, judge whether it is still covered.
 
-优先使用有误差定义的解析/制造解检查实现；与实验比较时分开考虑输入、数值与模型误差。跨求解器对照能暴露差异，不能自动证明共同结果正确。具体如何判断和安排补算见 [result-validation.md](result-validation.md)。
+Prefer analytical or manufactured solutions with a defined error to check an implementation; when comparing with experiment, consider input, numerical and model errors separately. A cross-solver comparison can expose differences but cannot automatically prove that a shared result is correct. For how to judge, and how to plan additional computations, see [result-validation.md](result-validation.md).

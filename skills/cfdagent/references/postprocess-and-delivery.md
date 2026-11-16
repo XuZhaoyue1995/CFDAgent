@@ -1,40 +1,40 @@
-# 后处理口径、图表与复现交付
+# Post-processing conventions, figures and reproducible delivery
 
-提取指标、比较数据或准备交付时按需阅读。沿用求解器原生工具、现有脚本和宿主编程能力；没有适合的工具就为当前数据编写并检查脚本，不要求统一后处理格式。
+Read as needed when extracting metrics, comparing data or preparing a delivery. Use the solver's native tools, existing scripts and the host's programming ability; when no suitable tool exists, write and check a script for the data at hand. No unified post-processing format is required.
 
-## 先确认输出量的含义
+## First confirm what the output quantities mean
 
-- 读取字段单位、维度、位置（单元、节点、面、粒子、IB marker）和坐标系。二维单位展向力、三维总力及轴对称环积分不能直接混用。插值或重采样保存方法，积分前确认是否需要面积/体积权重。
-- 压力区分 Pa、运动学压力 `p/rho`（m²/s²）、格子/无量纲量，以及静压、总压、表压、绝对压。不要把“单位为 Pa 的压力”与“动压 q=0.5*rho*U²”混称。常密度时可由 `p=rho*p_k` 恢复 Pa；变密度、`p_rgh` 或其他变换压力按具体求解器方程恢复。
-- 记录压力参考零点与比较基准；压差可消去共同常数，但开口面或单侧受力通常不能随意改变参考压力。判断表面法向朝向、作用于流体还是物体，以及压力、黏性、体力/IB 力是否已经包含，避免翻号或重复积分。
-- 实验中的绝对坐标、随体坐标和力方向可能不同。升阻力方向、力矩原点与正方向需要明确；旋转坐标系中的速度先确认是相对还是绝对速度。
+- Read the unit, the dimension, the location (cell, node, face, particle, IB marker) and the coordinate system of each field. Two-dimensional force per unit span, three-dimensional total force and an axisymmetric ring integral cannot be mixed directly. Keep the method of any interpolation or resampling, and confirm before integrating whether area or volume weights are needed.
+- For pressure, distinguish Pa, kinematic pressure `p/rho` (m²/s²) and lattice or nondimensional quantities, as well as static, total, gauge and absolute pressure. Do not conflate "a pressure in Pa" with "the dynamic pressure q=0.5*rho*U²". With constant density, Pa can be recovered from `p=rho*p_k`; with variable density, `p_rgh` or another transformed pressure, recover it from the equations of the specific solver.
+- Record the zero of the pressure reference and the basis of comparison; a pressure difference cancels a common constant, but the reference pressure of an open surface or of a one-sided load usually cannot be changed at will. Determine which way the surface normal points, whether the force acts on the fluid or on the body, and whether the pressure, viscous and body or IB forces are already included, to avoid a flipped sign or a double integration.
+- Absolute coordinates, body-fixed coordinates and force directions in an experiment may differ. The directions of lift and drag, and the origin and positive direction of moments, need to be explicit; for velocity in a rotating frame, first confirm whether it is relative or absolute.
 
-压力字段示例依据：[OpenFOAM 运动学压力定义](https://doc.openfoam.com/2312/tools/processing/solvers/algorithm-kinematic-pressure/)及[压力转换与静水项](https://doc.openfoam.com/2312/tools/post-processing/function-objects/field/pressure/)。这些是特定发行版说明，其他求解器或版本需核对自身定义。
+The pressure-field examples are based on the [OpenFOAM definition of kinematic pressure](https://doc.openfoam.com/2312/tools/processing/solvers/algorithm-kinematic-pressure/) and on [pressure conversion and the hydrostatic term](https://doc.openfoam.com/2312/tools/post-processing/function-objects/field/pressure/). These describe a specific distribution; other solvers or versions need their own definitions to be checked.
 
-## 系数、平均与比较
+## Coefficients, averages and comparisons
 
-常用约定为 `q_ref = 0.5*rho_ref*U_ref²`、`C_D = F_D/(q_ref*A_ref)`、`C_L = F_L/(q_ref*A_ref)`、`C_p = (p-p_ref)/q_ref`，力矩系数分母另乘 `L_ref`。保存各参考量的数值、单位及选取依据；二维单位展向力采用对应的单位展向参考面积。速度参考为零时另选有物理意义的约定，不能照除。
+The common conventions are `q_ref = 0.5*rho_ref*U_ref²`, `C_D = F_D/(q_ref*A_ref)`, `C_L = F_L/(q_ref*A_ref)` and `C_p = (p-p_ref)/q_ref`, with the denominator of a moment coefficient multiplied in addition by `L_ref`. Keep the value, the unit and the basis of choice of each reference quantity; a two-dimensional force per unit span uses the corresponding reference area per unit span. When the reference velocity is zero, choose another physically meaningful convention; do not divide regardless.
 
-不同研究可能采用平均翼速、来流速度、投影面积或总翼面积；按研究定义核对，不能看到同名系数就直接对比。力、压力和应力的修正方法与原始量分开保存，记录修正来源，不通过平移或缩放强行对齐参考结果。
+Different studies may use the mean wing speed, the freestream speed, the projected area or the total wing area; check against the definition of the study, and do not compare coefficients directly because they share a name. Keep correction methods for force, pressure and stress separate from the raw quantities and record the source of each correction; do not force agreement with a reference result by shifting or scaling.
 
-平均注明启动段排除、时间窗口、采样间隔、时间加权或相位平均方法。非均匀时间采样不能直接当等间隔算术平均。若归一化分母随时间变化，`mean(F/Q)` 一般不等于 `mean(F)/mean(Q)`，先明确用户要哪个量；RMS 与去均值后的波动 RMS 也需区分。跨周期比较对齐相位和窗口，统计不确定度结合时间相关性。
+For an average, state the exclusion of the startup phase, the time window, the sampling interval and the method of time weighting or phase averaging. Non-uniformly sampled data cannot be averaged arithmetically as if the samples were equally spaced. If the normalizing denominator varies with time, `mean(F/Q)` generally differs from `mean(F)/mean(Q)`; first establish which quantity the user wants. RMS and the RMS of the fluctuation after removing the mean also need to be distinguished. Align phase and window when comparing across periods, and take the temporal correlation into account in the statistical uncertainty.
 
-## 图表与报告
+## Figures and reports
 
-最终交付的科学图表以论文插图的表达质量为目标：在预期展示尺寸下，关键现象、比较关系和支撑结论的数据应清楚可辨。根据内容自主选择图型、布局和视觉风格，合理安排图内信息与图注，保留理解结果所需的条件、来源和局限。
+Scientific figures in the final delivery aim at the quality of expression of a figure in a paper: at the intended display size, the key phenomena, the relations being compared and the data that support the conclusion should be clearly distinguishable. Choose the type of figure, the layout and the visual style on your own according to the content, arrange the information in the figure and in the caption sensibly, and keep the conditions, sources and limitations needed to understand the result.
 
-导出后打开实际文件，同时检查科学表达和视觉可读性，自行修复越界、遮挡、截字以及可能造成误读的呈现。探索和诊断阶段可使用简图；图件质量要求不扩大计算或验证范围。
+After exporting, open the actual file, check both the scientific expression and the visual legibility, and fix on your own any overflow, occlusion, clipped text and presentation that could be misread. Simple plots are fine during exploration and diagnosis; the demand on figure quality does not enlarge the scope of computation or validation.
 
-按用户当前需要交付曲线、流场、解释或报告，不自动生成长文。图中标注变量、单位/无量纲定义、工况和时间/相位；对比图采用可解释的一致坐标与色标，必要时注明不同色标范围。矢量方向、切片位置和涡识别阈值应能追溯。
+Deliver curves, flow fields, explanations or reports according to what the user currently needs; do not generate long documents automatically. Label the variables, the units or nondimensional definitions, the operating conditions and the time or phase in figures; comparison figures use consistent axes and color scales that can be interpreted, with different color-scale ranges noted where necessary. The vector direction, the slice location and the vortex-identification threshold should be traceable.
 
-保存绘图脚本和其输入来源。滤波、裁剪、插值、平滑或数据剔除说明依据，保留原数据；展示设置不应被误称为数值结果本身。报告区分观测、物理解释与尚待验证的假设，验证证据引用实际文件，不把漂亮流场图当作验证。
+Keep the plotting scripts and the sources of their inputs. Give the basis for filtering, cropping, interpolation, smoothing or removal of data, and keep the original data; display settings should not be presented as the numerical result itself. A report distinguishes observation, physical interpretation and hypotheses still to be verified; validation evidence cites actual files, and an attractive flow-field picture is not validation.
 
-交付前按 [完成判断](../SKILL.md#完成与交付) 对照用户目标、已讨论的执行范围和现有证据。解释剩余限制对当前用途的影响：需要解决的缺项关联下一步工作，仅用于更高精度或未来研究的扩展作为可选项。缺少明确精度要求时，依据当前用途说明可支持的结论，不静默编造验收阈值或强加论文级验证。一个主要目标量已经稳定，也不能代替对用户关心的其他目标量作判断。
+Before delivery, use the [completion judgment](../SKILL.md#completion-and-delivery) to check against the user's goal, the scope of execution already discussed and the existing evidence. Explain how the remaining limitations affect the current use: gaps that need resolving are tied to the next step of work, and extensions that serve only higher accuracy or future research are optional. When no explicit accuracy requirement exists, state, in light of the current use, which conclusions can be supported; do not silently invent an acceptance threshold or impose paper-level validation. One main target quantity having settled is no substitute for judging the other target quantities the user cares about.
 
-## 可复现交付
+## Reproducible delivery
 
-需要分享或投稿时，整理足以复算目标结果的输入、网格/离散数据、求解器版本与源码提交或补丁、依赖/编译环境、执行命令、运行日志、分析脚本和结果清单。用运行标识及文件哈希或版本对应图表，保留前一版证据而不覆盖。
+When sharing or submitting is needed, assemble the inputs sufficient to recompute the target results, the mesh or discretization data, the solver version and source commit or patches, the dependencies and build environment, the execution commands, the run logs, the analysis scripts and a list of results. Tie figures to run identifiers and file hashes or versions, and keep the previous version of the evidence without overwriting it.
 
-大数据可提供存储位置、校验信息与获取办法，无需把所有中间场塞入压缩包。注明数据使用权限和复现所需资源；外发前检查包中不含凭据或不应公开的数据。几何与运动学的解释和转换在具体项目中处理，随项目保存所用脚本和依据。
+For large data, the storage location, the checksum information and the way to obtain them may be provided instead; there is no need to pack every intermediate field into the archive. State the permissions for using the data and the resources needed for reproduction; before sending anything out, check that the package contains no credentials and no data that should not be public. The interpretation and conversion of geometry and kinematics are handled within the specific project, with the scripts and the basis used kept with the project.
 
-只整理了包就标为“已整理”；实际复现过哪些命令和指标，就报告哪些。需要更多可信度证据时读 [result-validation.md](result-validation.md)。
+If the package has only been assembled, label it "assembled"; report exactly those commands and metrics that were actually reproduced. When more evidence of credibility is needed, read [result-validation.md](result-validation.md).
